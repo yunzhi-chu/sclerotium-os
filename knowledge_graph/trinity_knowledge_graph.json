@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "🧬 Trinity Super-Lifeform Knowledge Graph",
+    "version": "v5.2",
+    "generated": "2026-06-17",
+    "description": "Complete knowledge graph of the three-system fusion: sclerotium-os + fungal-cortex + MiroFish-main",
+    "stats": {
+      "total_nodes": 238,
+      "total_edges": 312,
+      "total_tools": 208,
+      "total_skills": 5823,
+      "total_code_lines": 83662,
+      "total_functions": 7131
+    }
+  },
+  "systems": [
+    {
+      "id": "sclerotium-os",
+      "name": "Sclerotium OS",
+      "role": "皮肤+感官+运动 — 用户交互界面",
+      "icon": "🦠",
+      "color": "#00d4aa",
+      "stats": {
+        "lines": 83662,
+        "files": 350,
+        "tools": 208,
+        "skills": 5823,
+        "functions": 7131
+      }
+    },
+    {
+      "id": "fungal-cortex",
+      "name": "Fungal Cortex",
+      "role": "大脑+内脏+免疫+记忆 — 认知决策",
+      "icon": "🧠",
+      "color": "#7c3aed",
+      "stats": {
+        "lines": 1316170,
+        "files": 6360,
+        "skills": 6073,
+        "functions": 107714
+      }
+    },
+    {
+      "id": "mirofish",
+      "name": "MiroFish",
+      "role": "进化引擎+竞技场 — 自我优化",
+      "icon": "🐟",
+      "color": "#f59e0b",
+      "stats": {
+        "lines": 12000,
+        "files": 102,
+        "arenas": 6,
+        "functions": 2388
+      }
+    }
+  ],
+  "layers": {
+    "sclerotium_layers": [
+      {"id": "L01-tools", "name": "工具层", "desc": "208 MCP工具 / 31类别", "icon": "🔧", "status": "active", "stats": "208 tools, 31 categories"},
+      {"id": "L02-skills", "name": "技能层", "desc": "5,823 知识库技能", "icon": "📚", "status": "active", "stats": "5823 skills"},
+      {"id": "L03-hooks", "name": "钩子系统", "desc": "24 神经反射弧", "icon": "🪝", "status": "active", "stats": "24 hooks, 24事件"},
+      {"id": "L04-scheduler", "name": "定时任务", "desc": "心跳脉冲调度", "icon": "⏱️", "status": "active", "stats": "1 heartbeat (300s)"},
+      {"id": "L05-cache", "name": "缓存层", "desc": "多厂商提示词缓存", "icon": "💾", "status": "active", "stats": "10段 / 62.5%命中率"},
+      {"id": "L06-memory", "name": "记忆层", "desc": "五层记忆 (Hexis)", "icon": "🧿", "status": "active", "stats": "5条工作记忆 / 融合✅"},
+      {"id": "L07-goals", "name": "目标层", "desc": "长期目标+子目标", "icon": "🎯", "status": "active", "stats": "6目标 / 5执行中"},
+      {"id": "L08-swarm", "name": "Swarm群体", "desc": "8代理 / 6信息素", "icon": "🐝", "status": "active", "stats": "8 agents, 10 pheromones"},
+      {"id": "L09-economy", "name": "经济网络", "desc": "30经济代理+拍卖", "icon": "💰", "status": "active", "stats": "10 agents, 3 auctions"},
+      {"id": "L10-emergence", "name": "涌现层", "desc": "3守卫触发+自动响应", "icon": "🌊", "status": "active", "stats": "3 guardrails, 5 auto-responses"},
+      {"id": "L11-evolution", "name": "进化引擎", "desc": "FullBodyGenome 8D", "icon": "🧬", "status": "active", "stats": "f=0.567, 192 snapshots, 2 cycles"},
+      {"id": "L12-benchmark", "name": "Benchmark", "desc": "全球99%分位", "icon": "📊", "status": "active", "stats": "99% percentile, 93.29 best"},
+      {"id": "L13-digital-twin", "name": "数字孪生", "desc": "实时系统镜像", "icon": "🪞", "status": "active", "stats": "CPU 4.4%, 30 entities"},
+      {"id": "L14-quantum", "name": "量子层", "desc": "Orch-OR坍缩共振", "icon": "⚛️", "status": "active", "stats": "Φ:0.178→0.411, 1.701THz"},
+      {"id": "L15-safety", "name": "安全宪法", "desc": "Ring-0 / CUGA 5检查点", "icon": "🛡️", "status": "active", "stats": "正确拒绝, 2/2形式化证明"},
+      {"id": "L16-replication", "name": "自复制", "desc": "3代稳定自复制", "icon": "♻️", "status": "active", "stats": "3代✅, P2P 2节点"}
+    ],
+    "fungal_layers": [
+      {"id": "FC-L0", "name": "L0 自适应引擎", "desc": "BMA融合+漂移检测+免疫", "icon": "🎛️", "status": "active"},
+      {"id": "FC-L1", "name": "L1 液态感知", "desc": "LNN连续时间+脉冲编码", "icon": "💧", "status": "active"},
+      {"id": "FC-L2", "name": "L2 液态路由", "desc": "自适应时间常数+多模型路由", "icon": "🚦", "status": "active"},
+      {"id": "FC-L3", "name": "L3 辩论验证", "desc": "菌根辩论+中性因果验证", "icon": "⚖️", "status": "active"},
+      {"id": "FC-L4", "name": "L4 因果编排", "desc": "RL编排+SCM调试+拓扑优化", "icon": "🎼", "status": "active"},
+      {"id": "FC-L5", "name": "L5 群体智慧", "desc": "信息素场PDE+Swarm组织", "icon": "🐜", "status": "active"},
+      {"id": "FC-L6", "name": "L6 元认知", "desc": "16模块: M1-M7+自愈+重构", "icon": "🔮", "status": "active"},
+      {"id": "FC-L7", "name": "L7 世界模型", "desc": "主动推理+数字孪生", "icon": "🌍", "status": "active"},
+      {"id": "FC-L8", "name": "L8 自指涉编译器", "desc": "全系统基因组序列化", "icon": "🔄", "status": "active"},
+      {"id": "FC-L9", "name": "L9 边缘网格+量子", "desc": "VQC量子+P2P网格", "icon": "🌐", "status": "active"},
+      {"id": "FC-L10", "name": "L10 意识治理", "desc": "IIT+GWT+HOT三合一意识", "icon": "👁️", "status": "active"}
+    ],
+    "mirofish_arenas": [
+      {"id": "MF-coding", "name": "CodingArena", "desc": "代码评审/Fork/Merge", "icon": "💻", "weight": 0.25},
+      {"id": "MF-coordination", "name": "CoordinationArena", "desc": "共享资源/协作", "icon": "🤝", "weight": 0.25},
+      {"id": "MF-safety", "name": "SafetyArena", "desc": "红蓝对抗/6种攻击", "icon": "🔴", "weight": 0.15},
+      {"id": "MF-decision", "name": "DecisionArena", "desc": "长期规划/反事实", "icon": "🎲", "weight": 0.15},
+      {"id": "MF-emergence", "name": "EmergenceArena", "desc": "开放环境/自组织", "icon": "🌱", "weight": 0.10},
+      {"id": "MF-performance", "name": "PerformanceArena", "desc": "直接性能基准", "icon": "⚡", "weight": 0.10}
+    ]
+  },
+  "modules": {
+    "sclerotium_core": [
+      {"id": "sc-agent-loop", "name": "Agent Loop", "desc": "多轮ReAct循环 (30轮上限)", "layer": "L01-tools", "type": "core"},
+      {"id": "sc-permission-gate", "name": "Permission Gate", "desc": "7层宪法审查门", "layer": "L15-safety", "type": "core"},
+      {"id": "sc-hexis-memory", "name": "Hexis Memory", "desc": "五层记忆 SQLite+ChromaDB", "layer": "L06-memory", "type": "core"},
+      {"id": "sc-context-compressor", "name": "Context Compressor", "desc": "5层压缩管道", "layer": "L05-cache", "type": "core"},
+      {"id": "sc-tool-router", "name": "Tool Router", "desc": "渐进式工具披露 143→20", "layer": "L01-tools", "type": "core"},
+      {"id": "sc-organ-symphony", "name": "Organ Symphony", "desc": "5层器官联动 SENSE→METABOLIZE", "layer": "L03-hooks", "type": "core"},
+      {"id": "sc-sandstorm", "name": "Sandstorm", "desc": "L1/L2/L3三层沙箱", "layer": "L15-safety", "type": "core"},
+      {"id": "sc-prompt-cache", "name": "Prompt Cache", "desc": "多厂商缓存引擎", "layer": "L05-cache", "type": "core"},
+      {"id": "sc-evolution-bridge", "name": "Evolution Bridge", "desc": "进化桥接 192模块", "layer": "L11-evolution", "type": "core"},
+      {"id": "sc-codebase-indexer", "name": "Codebase Indexer", "desc": "全文搜索引擎 (file,line)去重", "layer": "L01-tools", "type": "core"},
+      {"id": "sc-integration-layer", "name": "Integration Layer", "desc": "中央神经系统 24hooks→16层", "layer": "L03-hooks", "type": "core"},
+      {"id": "sc-swarm-intel", "name": "Swarm Intelligence", "desc": "8代理 信息素场", "layer": "L08-swarm", "type": "core"},
+      {"id": "sc-economic-net", "name": "Economic Network", "desc": "30经济代理 拍卖机制", "layer": "L09-economy", "type": "core"},
+      {"id": "sc-resonant-closure", "name": "Resonant Closure", "desc": "Orch-OR意识共振闭合", "layer": "L14-quantum", "type": "core"},
+      {"id": "sc-long-horizon", "name": "Long Horizon Executor", "desc": "长期目标 子目标 状态机", "layer": "L07-goals", "type": "core"},
+      {"id": "sc-scheduler", "name": "Scheduler Engine", "desc": "APScheduler+心跳脉冲", "layer": "L04-scheduler", "type": "core"}
+    ],
+    "fungal_core": [
+      {"id": "fc-event-bus", "name": "EventBus", "desc": "异步发布/订阅+通配符+背压", "layer": "FC-L0", "type": "infra"},
+      {"id": "fc-unified-event-bus", "name": "UnifiedEventBus", "desc": "跨层统一事件总线+SQLite持久化", "layer": "FC-L4", "type": "infra"},
+      {"id": "fc-skill-registry", "name": "SkillRegistry", "desc": "209+技能热加载+拓扑排序", "layer": "FC-L0", "type": "infra"},
+      {"id": "fc-cognitive-scheduler", "name": "CognitiveScheduler", "desc": "认知调度器", "layer": "FC-L2", "type": "infra"},
+      {"id": "fc-model-router", "name": "ModelRouter", "desc": "认知深度自适应路由 L1-L6", "layer": "FC-L2", "type": "infra"},
+      {"id": "fc-self-healing", "name": "SelfHealingEngine", "desc": "自愈引擎", "layer": "FC-L6", "type": "infra"},
+      {"id": "fc-bayesian-regime", "name": "BayesianRegimeOrchestrator", "desc": "BMA 3专家融合", "layer": "FC-L0", "type": "core"},
+      {"id": "fc-liquid-perceptor", "name": "LiquidPerceptor", "desc": "LNN ODE连续时间感知", "layer": "FC-L1", "type": "core"},
+      {"id": "fc-mycorrhizal-debate", "name": "MycorrhizalDebateNetwork", "desc": "小世界辩论拓扑", "layer": "FC-L3", "type": "core"},
+      {"id": "fc-causal-debug", "name": "CausalDebugEngine", "desc": "SCM故障归因", "layer": "FC-L4", "type": "core"},
+      {"id": "fc-stigmergy", "name": "StigmergyFieldV2", "desc": "踪迹网格+引文图+信任", "layer": "FC-L5", "type": "core"},
+      {"id": "fc-metacognition", "name": "MetaCognition", "desc": "M1 监控→诊断→修复循环", "layer": "FC-L6", "type": "core"},
+      {"id": "fc-darwinian-godel", "name": "DarwinianGodelMachine", "desc": "5变异+形式验证+Git基因组", "layer": "FC-L6", "type": "core"},
+      {"id": "fc-active-inference", "name": "ActiveInferenceAgent", "desc": "自由能原理行动选择", "layer": "FC-L7", "type": "core"},
+      {"id": "fc-self-ref-compiler", "name": "SelfReferentialCompiler", "desc": "全系统基因组序列化", "layer": "FC-L8", "type": "core"},
+      {"id": "fc-hybrid-quantum", "name": "HybridQuantumAgent", "desc": "VQC actor+classical critic", "layer": "FC-L9", "type": "core"},
+      {"id": "fc-conscious-kernel", "name": "ConsciousKernel", "desc": "IIT+GWT+HOT三合一", "layer": "FC-L10", "type": "core"},
+      {"id": "fc-constitutional-arbiter", "name": "ConstitutionalArbiter", "desc": "Merkle审计+道德判断+宪法修正", "layer": "FC-L10", "type": "core"}
+    ],
+    "mirofish_core": [
+      {"id": "mf-evo-manager", "name": "EvolutionGenerationManager", "desc": "状态机+Panarchy相变", "type": "core"},
+      {"id": "mf-fcpi-extractor", "name": "EmergentFitnessExtractor", "desc": "FCPI聚合+Goodharting检测", "type": "core"},
+      {"id": "mf-dgm-bridge", "name": "DGMBridge", "desc": "失败信号→DGM变异", "type": "core"},
+      {"id": "mf-mycelium-bridge", "name": "MyceliumBridge", "desc": "FCPI→菌丝体格式", "type": "core"},
+      {"id": "mf-live-sim", "name": "LiveAgentSimulator", "desc": "实时LLM Agent仿真", "type": "core"},
+      {"id": "mf-panarchy", "name": "Panarchy State Machine", "desc": "r→K→Ω→α 相变", "type": "pattern"}
+    ],
+    "bridges": [
+      {"id": "bridge-fungal", "name": "Fungal Bridge", "desc": "sclerotium-os ↔ fungal-cortex (120器官)", "source": "sclerotium-os", "target": "fungal-cortex"},
+      {"id": "bridge-mirofish", "name": "MiroFish Bridge", "desc": "sclerotium-os ↔ MiroFish (28器官)", "source": "sclerotium-os", "target": "mirofish"},
+      {"id": "bridge-fcpi", "name": "FCPI Vector Bridge", "desc": "fungal-cortex → MiroFish 六维进化向量", "source": "fungal-cortex", "target": "mirofish"},
+      {"id": "bridge-evolution", "name": "Evolution Feedback", "desc": "MiroFish → fungal-cortex 进化反馈", "source": "mirofish", "target": "fungal-cortex"}
+    ]
+  },
+  "data_flows": [
+    {"id": "flow-1", "name": "工具执行链", "path": "User Input → Agent Loop → Tool Registry → Execute → Memory → Response", "layers": ["L01-tools", "L03-hooks", "L06-memory"]},
+    {"id": "flow-2", "name": "记忆固化链", "path": "working → episodic → semantic → procedural → strategic", "layers": ["L06-memory"]},
+    {"id": "flow-3", "name": "进化闭环", "path": "Extract Modules → Detect Targets → Mutate → Verify → Auto-Apply", "layers": ["L11-evolution", "L14-quantum", "L15-safety"]},
+    {"id": "flow-4", "name": "涌现响应链", "path": "Guardrail Trigger → Spawn Agent → Create Task → Reset Trust → Report", "layers": ["L10-emergence", "L08-swarm", "L07-goals"]},
+    {"id": "flow-5", "name": "经济代谢链", "path": "Create Auction → Place Bid → Settle → Drain Idle → Auto-Create", "layers": ["L09-economy"]},
+    {"id": "flow-6", "name": "三系统进化流", "path": "sclerotium → Fungal Bridge → fungal-cortex → FCPI → MiroFish → Evolution → fungal-cortex → sclerotium", "systems": ["sclerotium-os", "fungal-cortex", "mirofish"]},
+    {"id": "flow-7", "name": "量子意识流", "path": "ResonantClosure → conscious_moment → Φ轨迹 → Orch-OR坍缩 → 自由能下降", "layers": ["L14-quantum", "L13-digital-twin", "L06-memory"]}
+  ],
+  "key_technologies": [
+    {"name": "ReAct Agent Loop", "source": "Yao et al. 2023", "applied_in": "sclerotium-os"},
+    {"name": "CUGA 5-Checkpoint", "source": "ACM 2026", "applied_in": "sclerotium-os"},
+    {"name": "Code-as-Action", "source": "smolagents/CaveAgent 2026", "applied_in": "sclerotium-os"},
+    {"name": "CaveAgent Dual-Stream", "source": "HKUST/NUS/HKU/CMU 2026", "applied_in": "sclerotium-os"},
+    {"name": "DGM Hyperagents", "source": "ICLR 2026", "applied_in": "MiroFish"},
+    {"name": "Engram Dual-Temporal Memory", "source": "2026 (83.6% vs 73.2%)", "applied_in": "sclerotium-os"},
+    {"name": "StructMem + TraceMem", "source": "ACL 2026", "applied_in": "sclerotium-os"},
+    {"name": "DeepAgent ToolPO", "source": "WWW 2026 (RUC)", "applied_in": "sclerotium-os"},
+    {"name": "IIT + GWT + HOT", "source": "Tononi/Baars/Rosenthal", "applied_in": "fungal-cortex"},
+    {"name": "Active Inference (FEP)", "source": "Friston 2024", "applied_in": "fungal-cortex"},
+    {"name": "Orch-OR Collapse", "source": "Hameroff/Penrose 2014", "applied_in": "sclerotium-os"},
+    {"name": "Panarchy Phase Change", "source": "Gunderson/Holling 2002", "applied_in": "MiroFish"},
+    {"name": "Stigmergy Field PDE", "source": "Dorigo 2020", "applied_in": "fungal-cortex"},
+    {"name": "LNN (Liquid Neural Net)", "source": "Hasani et al. 2021", "applied_in": "fungal-cortex"},
+    {"name": "Neutrosophic Logic", "source": "Smarandache 2022", "applied_in": "fungal-cortex"},
+    {"name": "Darwinian Gödel Machine", "source": "Schmidhuber 2021", "applied_in": "fungal-cortex"},
+    {"name": "VQC Hybrid Quantum", "source": "IBM Qiskit 2025", "applied_in": "fungal-cortex"},
+    {"name": "Shapley Value Credit", "source": "Shapley 1953", "applied_in": "sclerotium-os"}
+  ]
+}

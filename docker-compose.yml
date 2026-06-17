@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  sclerotium:
+    build: .
+    container_name: sclerotium-os
+    restart: unless-stopped
+    ports:
+      - "18789:18789"
+    environment:
+      - SCLEROTIUM_API_KEY=${SCLEROTIUM_API_KEY}
+      - SCLEROTIUM_API_BASE=${SCLEROTIUM_API_BASE:-https://api.deepseek.com/v1}
+      - SCLEROTIUM_MODEL=${SCLEROTIUM_MODEL:-deepseek-v4-flash}
+      - SCLEROTIUM_FALLBACK_PROVIDERS=${SCLEROTIUM_FALLBACK_PROVIDERS:-}
+      - SCLEROTIUM_ADMIN_CHAT=${SCLEROTIUM_ADMIN_CHAT:-}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:18789/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: ChromaDB server for shared memory
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: sclerotium-chromadb
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/chromadb:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    profiles:
+      - full

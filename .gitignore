@@ -1,0 +1,83 @@
+# ═══════════════════════════════════════════════════════════════
+# Sclerotium Trinity — 三系统超级生命体
+# ═══════════════════════════════════════════════════════════════
+
+# 环境变量 (含API密钥，绝对不能提交)
+.env
+**/.env
+
+# 数据目录 (数据库、会话、记忆、缓存、进化状态等)
+data/
+**/data/
+
+# Codegraph 代码图谱索引
+.codegraph/
+**/.codegraph/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+
+# Node.js
+node_modules/
+**/node_modules/
+
+# Python venv
+.venv/
+**/.venv/
+venv/
+**/venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时文件
+*.log
+*.tmp
+_t.txt
+test.txt
+test_cmd.txt
+__fs_test/
+
+# 截图和导出
+*.png
+*.jpg
+!.github/**/*.png
+
+# Playwright
+.playwright-mcp/
+
+# 用户上传
+uploads/
+**/uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/
+**/.claude/
+
+# 配置文件 (用 config.example.yaml 和 .env.example 替代)
+config.yaml
+**/config.yaml
+
+# ChromaDB
+chroma/
+**/chroma/
+chroma_test/
+**/chroma_test/

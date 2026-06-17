@@ -1,0 +1,36 @@
+# Sclerotium OS v5.0 — 超级生命体依赖
+# 238器官全栈环境
+
+# === 核心 ===
+pywin32>=306            # Windows API (必须)
+psutil>=5.9             # 进程/系统监控
+watchdog>=4.0           # 文件系统监控
+
+# === 记忆 ===
+chromadb>=0.4           # 向量数据库
+sqlite3                 # (内置)
+
+# === UI ===
+pystray>=0.19           # 系统托盘
+Pillow>=10.0            # 图标生成
+tkinter                 # (内置) Alt+Space 浮窗
+
+# === 桌面自动化 ===
+pywinauto>=0.6          # Windows UIA
+pyautogui>=0.9          # 键盘/鼠标控制
+pynput>=1.7             # 输入监听 (可选)
+
+# === 进化/科学 ===
+numpy>=1.24             # 数值计算 (可选, GPU加速需要cupy)
+
+# === 可选: LLM网关 ===
+# litellm>=1.40         # 100+ 提供商 (可选, 需要时 pip install litellm)
+# openai>=1.0           # OpenAI API (可选)
+
+# === 可选: IM平台 ===
+# lark-oapi>=1.4        # 飞书 (可选)
+# python-telegram-bot   # Telegram (可选)
+# websockets>=12.0      # QQ OneBot (可选)
+
+# === 可选: GPU加速 ===
+# cupy-cuda12x>=13.0    # GPU加速 (可选, 仅NVIDIA GPU)

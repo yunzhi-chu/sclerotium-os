@@ -1,0 +1,113 @@
+# Sclerotium OS — 统一配置模板
+# 复制为 config.yaml 并填入你的配置
+
+system:
+  name: "Sclerotium OS"
+  version: "0.1.0"
+  work_dir: "./data"
+
+llm:
+  routing:
+    cheap:
+      provider: ollama
+      model: minicpm5-1b
+      base_url: http://localhost:11434/v1
+    standard:
+      provider: deepseek
+      model: deepseek-v4-flash
+      base_url: https://api.deepseek.com/v1
+      api_key: ${DEEPSEEK_API_KEY}
+    premium:
+      provider: openai
+      model: claude-opus-4-8
+      base_url: https://api.anthropic.com/v1
+      api_key: ${ANTHROPIC_API_KEY}
+
+paths:
+  fungal_cortex: "./fungal-cortex"
+  mirofish: "./MiroFish-main/backend"
+
+evolution:
+  default_generations: 10
+  default_population: 50
+  max_generations: 1000
+  work_dir: "./data/evolution"
+  fcpi_weights:
+    coding: 0.25
+    coordination: 0.25
+    safety: 0.15
+    decision: 0.15
+    emergence: 0.10
+    performance: 0.10
+
+memory:
+  chroma_path: "./data/chroma"
+  sqlite_path: "./data/memory.db"
+  consolidation:
+    working_to_episodic: 1
+    episodic_to_semantic: 10
+    semantic_to_procedural: 50
+    procedural_to_strategic: 100
+  ebbinghaus:
+    default_halflife_days: 7
+    importance_multiplier: 2.0
+
+sandstorm:
+  l1:
+    type: subprocess
+    timeout_seconds: 30
+    max_memory_mb: 512
+  l2:
+    type: docker
+    image: python:3.12-slim
+    network: none
+    read_only: true
+  l3:
+    type: wasm
+    runtime: wasmtime
+
+safety:
+  arbiter:
+    policy_gate: true
+    behavior_gate: true
+    debate_gate: true
+    counterfactual_gate: true
+    human_gate: true
+  sandbox_required: true
+  audit_log_path: "./data/audit.jsonl"
+  immutable_dirs:
+    - "C:/Windows"
+    - "C:/Program Files"
+    - "C:/Program Files (x86)"
+
+stg:
+  rhythms:
+    pyloric:
+      scan_interval_minutes: 30
+      evolution_check_interval_minutes: 5
+      memory_consolidate_interval_hours: 6
+    gastric:
+      daily_digest_time: "09:00"
+      weekly_report_day: monday
+      monthly_analysis_day: 1
+  neuromodulator:
+    default_profile: work
+
+im_platforms:
+  feishu:
+    enabled: false
+    app_id: ""
+    app_secret: ""
+  qq:
+    enabled: false
+    protocol: onebot_v11
+    ws_url: ws://localhost:3001
+  wechat:
+    enabled: false
+    bridge: gewechat
+    api_url: http://localhost:2531
+
+desktop:
+  uia_enabled: true
+  ocr_enabled: true
+  screenshot_dir: "./data/screenshots"

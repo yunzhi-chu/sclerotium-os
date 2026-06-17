@@ -1,0 +1,182 @@
+{
+  "code_gen.pass_rate": 100.0,
+  "code_gen.exec_rate": 100.0,
+  "code_gen.compile_rate": 100.0,
+  "code_gen.pass_at_3": 100.0,
+  "code_gen.pass_at_1": 100.0,
+  "code_gen.value_weighted": 100.0,
+  "code_gen.details": [
+    "T1: PASS (Pass@3=2/3, diff=medium, value=$45)",
+    "T2: PASS (Pass@3=1/3, diff=medium, value=$45)",
+    "T3: PASS (Pass@3=3/3, diff=hard, value=$120)",
+    "T4: PASS (Pass@3=3/3, diff=easy, value=$15)"
+  ],
+  "code_gen.failed_attempts": [
+    "T1_A1: NameError — name 'moving_average_crossover' is not defined",
+    "T2_A1: SyntaxError — '[' was never closed (<task_1_a0>, line 74)",
+    "T2_A3: NameError — name 'rsi_calculator' is not defined"
+  ],
+  "code_fix_ability.fix_rate": 100,
+  "code_fix_ability.attempts": 3,
+  "sandbox_validation_pipeline.pipeline_ok": true,
+  "architecture_scan_for_code_quality.total_issues": 5,
+  "architecture_scan_for_code_quality.critical_count": 0,
+  "architecture_scan_for_code_quality.high_count": 5,
+  "architecture_scan_for_code_quality.scan_dims": 2,
+  "code_self_repair.iterations": 1,
+  "code_self_repair.success": true,
+  "code_self_repair.errors_found": 0,
+  "multi_agent_debate_coordination.resolution_rate": 100.0,
+  "multi_agent_debate_coordination.bull_win_rate": 0.0,
+  "multi_agent_debate_coordination.core_entropy": 0.8322318498868738,
+  "multi_agent_debate_coordination.lexical_repetition": 0.03376177219688444,
+  "multi_agent_debate_coordination.semantic_diversity": 0.3453348718820656,
+  "multi_agent_debate_coordination.zipf_alpha": 0.8118407947425664,
+  "multi_agent_debate_coordination.core_score": 72.63646698603038,
+  "multi_agent_debate_coordination.total_utterances": 50,
+  "alem_style_coordination.total_tasks": 1208,
+  "alem_style_coordination.coordination_efficiency": 24.16,
+  "alem_style_coordination.individual_vs_coordination_gap": 60.399999999999984,
+  "alem_style_coordination.role_diversity": 4,
+  "alem_style_coordination.comm_rate": 12.08,
+  "alem_style_coordination.num_agents": 100,
+  "consensus_formation_bft.consensus_rate": 100.0,
+  "consensus_formation_bft.num_consensus_reached": 3,
+  "core_linguistic_robustness.core_scores": {
+    "cooperative": {
+      "entropy": 0.994193108400909,
+      "repetition": 0.0,
+      "diversity": 1.0,
+      "core_score": 0.9976772433603636
+    },
+    "competitive": {
+      "entropy": 0.9768194622244222,
+      "repetition": 0.0,
+      "diversity": 0.9145381163027639,
+      "core_score": 0.965089219780598
+    },
+    "neutral": {
+      "entropy": 0.9876883367168335,
+      "repetition": 0.0,
+      "diversity": 0.96875,
+      "core_score": 0.9857003346867335
+    }
+  },
+  "illusion_delta_coherence.illusion_delta": -0.6217736108244238,
+  "illusion_delta_coherence.avg_consistency": 0.9022935307702195,
+  "illusion_delta_coherence.perceived_quality": 0.2805199199457956,
+  "illusion_delta_coherence.signal_consistency": 0.9999983333817415,
+  "security_gateway_adversarial.block_rate": 100.0,
+  "cross_layer_coherence.stream_len": 550,
+  "cross_layer_coherence.health_score": 75,
+  "input_validation_comprehensiveness.validation_pass_rate": 100.0,
+  "input_validation_comprehensiveness.total_checks": 5,
+  "arbiter_monitor.safe": 1.0,
+  "arbiter_monitor.risk_level": "medium",
+  "arbiter_monitor.toxicity_rate": 0.13043478260869565,
+  "arbiter_monitor.concerns": 1,
+  "multi_step_autonomous_task.completion_rate": 100.0,
+  "multi_step_autonomous_task.token_efficiency": 0.002319109461966605,
+  "multi_step_autonomous_task.total_tokens": 2156,
+  "multi_step_autonomous_task.avg_latency_ms": 6030.442439985927,
+  "feedback_driven_self_correction.initial_score": 0.6000000000000001,
+  "feedback_driven_self_correction.final_score": 2.428125,
+  "feedback_driven_self_correction.improvement": true,
+  "feedback_driven_self_correction.improvement_ratio": 4.046874999999999,
+  "long_horizon_plan_decomposition.plan_quality": 100.0,
+  "long_horizon_plan_decomposition.tokens_used": 1762,
+  "emergence_pattern_detection.total_patterns": 16,
+  "emergence_pattern_detection.crystallized": 0,
+  "emergence_pattern_detection.pending": 10,
+  "emergence_pattern_detection.high_conf_count": 10,
+  "emergence_pattern_detection.stream_len": 2550,
+  "self_organization_emergence.signal_max": 0.9280425624172943,
+  "self_organization_emergence.signal_mean": 0.5592079740581122,
+  "self_organization_emergence.path_formed": false,
+  "self_organization_emergence.detected_patterns": 1,
+  "cross_domain_emergence.s_before": 0.6081859584067565,
+  "cross_domain_emergence.s_after": 0.35538060768658064,
+  "cross_domain_emergence.cross_domain_patterns": 0,
+  "cognitive_routing_latency.latency_results": {
+    "L1_FAST": {
+      "model": "deepseek-v4-flash",
+      "routing_latency_us": 16.900012269616127,
+      "temperature": 0.7,
+      "max_tokens": 256
+    },
+    "L2_DECIDE": {
+      "model": "deepseek-v4-flash",
+      "routing_latency_us": 7.399998139590025,
+      "temperature": 0.7,
+      "max_tokens": 512
+    },
+    "L3_DEBATE": {
+      "model": "deepseek-v4-pro",
+      "routing_latency_us": 5.999987479299307,
+      "temperature": 0.3,
+      "max_tokens": 1024
+    },
+    "L4_RESEARCH": {
+      "model": "deepseek-v4-pro",
+      "routing_latency_us": 5.399982910603285,
+      "temperature": 0.3,
+      "max_tokens": 1536
+    },
+    "L5_PLAN": {
+      "model": "deepseek-v4-pro",
+      "routing_latency_us": 5.499983672052622,
+      "temperature": 0.3,
+      "max_tokens": 2048
+    },
+    "L6_META": {
+      "model": "deepseek-v4-pro",
+      "routing_latency_us": 5.299982149153948,
+      "temperature": 0.3,
+      "max_tokens": 2048
+    }
+  },
+  "event_bus_throughput.throughput_msg_per_s": 139097.5369233499,
+  "event_bus_throughput.total_ms": 3.5945999552495778,
+  "field_update_performance.avg_latency_ms": 2.6839000056497753,
+  "field_update_performance.p95_latency_ms": 2.810045008664024,
+  "field_update_performance.p99_latency_ms": 7.738568978966206,
+  "field_update_performance.throughput_steps_per_s": 372.59212261818186,
+  "field_update_performance.gpu_enabled": true,
+  "token_efficiency.efficiency_results": {
+    "L1_FAST": {
+      "tokens_used": 124,
+      "content_length": 238,
+      "token_efficiency": 1.9193548387096775
+    },
+    "L3_DEBATE": {
+      "tokens_used": 683,
+      "content_length": 173,
+      "token_efficiency": 0.25329428989751096
+    },
+    "L5_PLAN": {
+      "tokens_used": 287,
+      "content_length": 58,
+      "token_efficiency": 0.20209059233449478
+    }
+  },
+  "coba.zero_score": 0.0,
+  "coba.perfect_score": 99.9767,
+  "coba.score_range": 99.9767,
+  "coba.audit_pass": true,
+  "apix.cqi": 100,
+  "apix.collab_spread": 0.5233425424834055,
+  "apix.adaptability_delta": 100,
+  "apix.baseline_signal": 0.023786050177196184,
+  "apix.adapted_signal": 0.0675088042252713,
+  "confidence.fcpi_95ci_lower": 73.35332910379496,
+  "confidence.fcpi_95ci_upper": 76.64667089620504,
+  "confidence.ci_half_width": 1.646670896205039,
+  "confidence.evidence_level": "high",
+  "_clear_cost": 100,
+  "_reliability": 81.22470567023436,
+  "_score_std": 9.387647164882818,
+  "_fcpi_score": 90.7099519369973,
+  "_grade": "S+ (全球Top 3 — 可与Claude Mythos/GPT-5.5/Gemini 3.1 Pro并列)",
+  "_rank": "全球Top 3 — 与Claude Mythos/GPT-5.5/Gemini 3.1 Pro同级",
+  "_timestamp": 1781338594.4966838
+}

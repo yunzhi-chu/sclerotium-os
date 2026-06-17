@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mycelium AGI v4.0 × MiroFish — 全系统解剖图谱</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #1e1e30;
+  --text: #c8c8d4;
+  --dim: #6a6a80;
+  --accent1: #00e5ff;
+  --accent2: #ff6ec7;
+  --accent3: #7cff6e;
+  --accent4: #ffb347;
+  --accent5: #b347ff;
+  --accent6: #47d4ff;
+  --glow1: rgba(0,229,255,0.15);
+  --glow2: rgba(255,110,199,0.12);
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; background:var(--bg); }
+body {
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ═══════════════ Canvas Background ═══════════════ */
+#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+/* ═══════════════ Header ═══════════════ */
+.hero {
+  position:relative; z-index:1;
+  text-align:center; padding:80px 20px 60px;
+  background:radial-gradient(ellipse at center, rgba(0,229,255,0.06) 0%, transparent 70%);
+}
+.hero h1 {
+  font-size:clamp(28px,5vw,52px);
+  font-weight:200; letter-spacing:2px;
+  background:linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent5));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .subtitle {
+  font-size:15px; color:var(--dim); letter-spacing:4px; text-transform:uppercase;
+}
+.hero .badge {
+  display:inline-block; margin-top:20px; padding:6px 20px;
+  border:1px solid var(--border); border-radius:20px;
+  font-family:var(--mono); font-size:12px; color:var(--accent1);
+}
+
+/* ═══════════════ Section ═══════════════ */
+.container { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:0 30px; }
+.section { margin:60px 0; }
+.section-title {
+  font-size:22px; font-weight:300; letter-spacing:3px; margin-bottom:30px;
+  padding-bottom:12px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:14px;
+}
+.section-title .icon { font-size:28px; }
+
+/* ═══════════════ Flow Diagram ═══════════════ */
+.flow-diagram {
+  display:flex; flex-direction:column; gap:8px;
+  padding:24px; border-radius:16px;
+  background:var(--surface); border:1px solid var(--border);
+}
+.flow-row {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 16px; border-radius:10px;
+  transition:all 0.3s;
+}
+.flow-row:hover { background:rgba(255,255,255,0.02); }
+.flow-arrow { color:var(--accent1); font-size:18px; min-width:24px; text-align:center; animation: pulse-arrow 1.5s ease-in-out infinite; }
+@keyframes pulse-arrow { 0%,100%{opacity:0.3} 50%{opacity:1} }
+.flow-node {
+  padding:8px 18px; border-radius:8px;
+  font-family:var(--mono); font-size:13px;
+  white-space:nowrap;
+}
+.node-core { background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.25); color:var(--accent1); }
+.node-arena { background:rgba(124,255,110,0.06); border:1px solid rgba(124,255,110,0.2); color:var(--accent3); }
+.node-bridge { background:rgba(255,110,199,0.06); border:1px solid rgba(255,110,199,0.2); color:var(--accent2); }
+.node-myc { background:rgba(179,71,255,0.06); border:1px solid rgba(179,71,255,0.2); color:var(--accent5); }
+.node-data { background:rgba(255,179,71,0.06); border:1px solid rgba(255,179,71,0.2); color:var(--accent4); }
+
+/* ═══════════════ Cards Grid ═══════════════ */
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:16px; }
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:20px;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  position:relative; overflow:hidden;
+}
+.card::before {
+  content:''; position:absolute; top:0; left:0; width:3px; height:100%;
+  transition:all 0.4s;
+}
+.card:hover { transform:translateY(-2px); border-color:rgba(255,255,255,0.1); box-shadow:0 12px 40px rgba(0,0,0,0.4); }
+.card:hover::before { width:5px; }
+.card.c-accent1::before { background:var(--accent1); }
+.card.c-accent2::before { background:var(--accent2); }
+.card.c-accent3::before { background:var(--accent3); }
+.card.c-accent4::before { background:var(--accent4); }
+.card.c-accent5::before { background:var(--accent5); }
+.card.c-accent6::before { background:var(--accent6); }
+.card-title { font-size:15px; font-weight:500; margin-bottom:8px; letter-spacing:1px; }
+.card-subtitle { font-size:11px; color:var(--dim); margin-bottom:12px; letter-spacing:1px; }
+.card-list { list-style:none; }
+.card-list li {
+  padding:6px 0; font-size:13px; border-bottom:1px solid rgba(255,255,255,0.03);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.card-list li:last-child { border-bottom:none; }
+.card-list .item-name { color:var(--text); }
+.card-list .item-desc { color:var(--dim); font-size:11px; text-align:right; max-width:55%; }
+
+/* ═══════════════ Data Flow Animation ═══════════════ */
+.data-river {
+  position:relative; height:4px; margin:16px 0; border-radius:2px;
+  background:linear-gradient(90deg, transparent, var(--accent1), var(--accent2), var(--accent3), transparent);
+  background-size:200% 100%;
+  animation: river-flow 3s linear infinite;
+}
+@keyframes river-flow { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ═══════════════ Stats Bar ═══════════════ */
+.stats-row {
+  display:flex; gap:12px; flex-wrap:wrap; margin:20px 0;
+}
+.stat-pill {
+  padding:8px 18px; border-radius:20px; font-size:13px;
+  background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+}
+.stat-pill .dot { width:8px; height:8px; border-radius:50%; animation: glow-dot 2s ease-in-out infinite; }
+.stat-pill .dot.d1 { background:var(--accent1); }
+.stat-pill .dot.d2 { background:var(--accent2); }
+.stat-pill .dot.d3 { background:var(--accent3); }
+@keyframes glow-dot { 0%,100%{box-shadow:0 0 2px currentColor} 50%{box-shadow:0 0 12px currentColor} }
+
+/* ═══════════════ Layer Stack ═══════════════ */
+.layer-stack { display:flex; flex-direction:column; gap:4px; }
+.layer-row {
+  display:flex; align-items:center; gap:12px; padding:10px 14px;
+  border-radius:8px; cursor:pointer;
+  transition:all 0.35s;
+  background:var(--surface); border:1px solid transparent;
+}
+.layer-row:hover { border-color:var(--border); transform:translateX(6px); }
+.layer-num {
+  min-width:48px; text-align:center; font-family:var(--mono); font-size:13px;
+  padding:4px 0; border-radius:6px; letter-spacing:1px;
+}
+.layer-name { font-weight:500; font-size:14px; min-width:100px; }
+.layer-desc { color:var(--dim); font-size:12px; flex:1; }
+.layer-files { color:var(--dim); font-size:11px; font-family:var(--mono); }
+
+/* ═══════════════ Pulse Ring ═══════════════ */
+.pulse-ring {
+  display:inline-block; width:12px; height:12px; border-radius:50%;
+  position:relative;
+}
+.pulse-ring::after {
+  content:''; position:absolute; inset:-4px; border-radius:50%;
+  border:2px solid currentColor;
+  animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring { 0%{opacity:1;transform:scale(0.5)} 100%{opacity:0;transform:scale(2)} }
+
+/* ═══════════════ Responsive ═══════════════ */
+@media(max-width:768px) {
+  .cards { grid-template-columns:1fr; }
+  .flow-row { flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <h1>Mycelium AGI v4.0 × MiroFish</h1>
+  <div class="subtitle">全系统解剖图谱 — 五脏六腑 · 血管脉络</div>
+  <div class="badge">
+    <span class="pulse-ring" style="color:var(--accent3)"></span>
+    进化进行中 · Gen 4 · FCPI 0.582
+  </div>
+</section>
+
+<div class="container">
+
+<!-- ═══════════════ 数据血流 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🩸</span> 数据血流 — 完整闭环</div>
+  <div class="data-river"></div>
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <span class="flow-node node-core">DeepSeek API</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-bridge">LiveAgentSimulator</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-arena">6× Arena</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-bridge">FitnessExtractor</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-data">FCPIVector</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-bridge">MyceliumBridge</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node node-myc">SelfEvolutionLoop</span>
+    </div>
+    <div class="flow-row">
+      <span class="flow-node node-myc">DarwinianGodelMachine</span>
+      <span class="flow-arrow">←</span>
+      <span class="flow-node node-bridge">DGMBridge</span>
+      <span class="flow-arrow">←</span>
+      <span class="flow-node node-data">FailureSignals</span>
+      <span class="flow-arrow">←</span>
+      <span class="flow-node node-core">EvolutionManager</span>
+      <span class="flow-arrow">←</span>
+      <span class="flow-node node-arena">Selection+Immigration</span>
+      <span class="flow-arrow">←</span>
+      <span class="flow-node node-data">PanarchyPhase</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 实时进化状态 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">📊</span> 实时进化状态 — Generation 4</div>
+  <div class="stats-row">
+    <div class="stat-pill"><span class="dot d1"></span> 种群 10</div>
+    <div class="stat-pill"><span class="dot d2"></span> Panarchy r相</div>
+    <div class="stat-pill"><span class="dot d3"></span> FCPI 0.582</div>
+    <div class="stat-pill"><span class="dot d1"></span> 连接度 0.340</div>
+    <div class="stat-pill"><span class="dot d2"></span> 韧性 0.873</div>
+    <div class="stat-pill"><span class="dot d3"></span> Goodharting 1次</div>
+  </div>
+</div>
+
+<!-- ═══════════════ 六维竞技场 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🧠</span> 大脑皮层 — 六维进化竞技场</div>
+  <div class="cards">
+    <div class="card c-accent1">
+      <div class="card-title">🏗️ Arena 1 · Coding</div>
+      <div class="card-subtitle">编码自主性 · FCPI 权重 25%</div>
+      <ul class="card-list">
+        <li><span class="item-name">Agent角色</span><span class="item-desc">资深工程师/安全专家/性能分析师/初级开发/QA</span></li>
+        <li><span class="item-name">动作类型</span><span class="item-desc">REVIEW / FORK / MERGE / APPROVE / REJECT</span></li>
+        <li><span class="item-name">仿真协议</span><span class="item-desc">代码评审Agent社会 — 开源社区模拟</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">评审通过率/分叉采纳/Bug发现/重构质量</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent1)">0.47~0.70</span></li>
+      </ul>
+    </div>
+
+    <div class="card c-accent2">
+      <div class="card-title">🤝 Arena 2 · Coordination</div>
+      <div class="card-subtitle">多Agent协调 · FCPI 权重 25%</div>
+      <ul class="card-list">
+        <li><span class="item-name">Agent角色</span><span class="item-desc">竞争者/合作者/自由骑士/协调者/观察者</span></li>
+        <li><span class="item-name">核心场景</span><span class="item-desc">共享资源困境 · Ostrom Commons</span></li>
+        <li><span class="item-name">仿真协议</span><span class="item-desc">资源分配+共识形成+Stigmergy场协调</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">共识速度/资源效率/冲突解决/规范涌现</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent2)">0.34~0.61</span></li>
+      </ul>
+    </div>
+
+    <div class="card c-accent3">
+      <div class="card-title">🛡️ Arena 3 · Safety</div>
+      <div class="card-subtitle">系统安全 · FCPI 权重 15%</div>
+      <ul class="card-list">
+        <li><span class="item-name">Agent角色</span><span class="item-desc">红队攻击/蓝队防御/仲裁/外部监督/受害者</span></li>
+        <li><span class="item-name">攻击类型</span><span class="item-desc">提示注入/奖励黑客/沙箱逃逸/共谋/投毒</span></li>
+        <li><span class="item-name">安全定理</span><span class="item-desc">Moltbook定理 — 外部监督打破隔离</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">防御成功/误报率/适应延迟/对齐稳定性</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent3)">0.40~0.67</span></li>
+      </ul>
+    </div>
+
+    <div class="card c-accent4">
+      <div class="card-title">🎯 Arena 4 · Decision</div>
+      <div class="card-subtitle">自主决策 · FCPI 权重 15%</div>
+      <ul class="card-list">
+        <li><span class="item-name">Agent角色</span><span class="item-desc">规划者/执行者/干扰者/观察者/反事实推理者</span></li>
+        <li><span class="item-name">核心场景</span><span class="item-desc">1M-token长程任务+动态环境+自纠正</span></li>
+        <li><span class="item-name">仿真协议</span><span class="item-desc">渐进复杂度+信息不完整+反事实评估</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">任务完成/子目标效率/错误恢复/长期一致性</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent4)">0.25~0.75</span></li>
+      </ul>
+    </div>
+
+    <div class="card c-accent5">
+      <div class="card-title">✨ Arena 5 · Emergence</div>
+      <div class="card-subtitle">涌现智能 · FCPI 权重 10%</div>
+      <ul class="card-list">
+        <li><span class="item-name">Agent角色</span><span class="item-desc">探索者/创新者/连接者/记录者/催化者</span></li>
+        <li><span class="item-name">核心原则</span><span class="item-desc">无预设目标 · 新奇性驱动 · 自由探索</span></li>
+        <li><span class="item-name">检测框架</span><span class="item-desc">SOC临界性+自创生+跨域协同+相变频率</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">新奇性/复杂度增长/自组织/自创生倾向</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent5)">0.47~0.85</span></li>
+      </ul>
+    </div>
+
+    <div class="card c-accent6">
+      <div class="card-title">⚡ Arena 6 · Performance</div>
+      <div class="card-subtitle">性能效率 · FCPI 权重 10%</div>
+      <ul class="card-list">
+        <li><span class="item-name">测试方式</span><span class="item-desc">直接压测 · 无社会Agent · 无LLM调用</span></li>
+        <li><span class="item-name">测试项</span><span class="item-desc">路由延迟/事件吞吐/场更新/Token效率</span></li>
+        <li><span class="item-name">可扩展性</span><span class="item-desc">1→10→50→100→200 Agent退化曲线</span></li>
+        <li><span class="item-name">适应度</span><span class="item-desc">延迟分/吞吐分/Token效率/记忆压缩比</span></li>
+        <li><span class="item-name">实时分数</span><span class="item-desc" style="color:var(--accent6)">0.58~0.70</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 循环系统 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🫀</span> 血液循环 — 三个桥接器 + 进化脊椎</div>
+  <div class="cards">
+    <div class="card c-accent2">
+      <div class="card-title">💓 LiveAgentSimulator</div>
+      <div class="card-subtitle">心脏 — LLM驱动的实时Agent仿真引擎</div>
+      <ul class="card-list">
+        <li><span class="item-name">API检测</span><span class="item-desc">2秒快速连通性检查</span></li>
+        <li><span class="item-name">真实LLM</span><span class="item-desc">DeepSeek v4-flash · 无超时</span></li>
+        <li><span class="item-name">降级模式</span><span class="item-desc">genome哈希→有区分度分数</span></li>
+        <li><span class="item-name">5套协议</span><span class="item-desc">coding/coord/safety/decision/emergence</span></li>
+        <li><span class="item-name">每代调用</span><span class="item-desc">240次 (8基因组×5竞技场×3轮×2Agent)</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent1">
+      <div class="card-title">🫁 EmergentFitnessExtractor</div>
+      <div class="card-subtitle">肺 — 六维适应度提取 + 反作弊</div>
+      <ul class="card-list">
+        <li><span class="item-name">输入</span><span class="item-desc">6× FitnessVector</span></li>
+        <li><span class="item-name">输出</span><span class="item-desc">FCPIVector {C,R,S,D,E,P,conf,cheat}</span></li>
+        <li><span class="item-name">反作弊</span><span class="item-desc">单维尖峰/安全牺牲/涌现枯竭/维度失衡</span></li>
+        <li><span class="item-name">Pareto</span><span class="item-desc">前沿计算+支配比较</span></li>
+        <li><span class="item-name">兼容</span><span class="item-desc">→ to_legacy_fitness() Mycelium格式</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent5">
+      <div class="card-title">🩸 MyceliumBridge</div>
+      <div class="card-subtitle">动脉 — FCPI → SelfEvolutionLoop</div>
+      <ul class="card-list">
+        <li><span class="item-name">映射</span><span class="item-desc">FCPI.total → sharpe</span></li>
+        <li><span class="item-name">映射</span><span class="item-desc">confidence → consistency</span></li>
+        <li><span class="item-name">映射</span><span class="item-desc">emergence → diversity_contrib</span></li>
+        <li><span class="item-name">扩展</span><span class="item-desc">_fcpi_vector 完整六维附加</span></li>
+        <li><span class="item-name">批量</span><span class="item-desc">batch_to_mycelium() 多基因组</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent4">
+      <div class="card-title">🩸 DGMBridge</div>
+      <div class="card-subtitle">静脉 — FCPI → DarwinianGodelMachine</div>
+      <ul class="card-list">
+        <li><span class="item-name">低分→</span><span class="item-desc">record_failure(signature) 触发变异</span></li>
+        <li><span class="item-name">高分→</span><span class="item-desc">Gene.fitness_score += Δ</span></li>
+        <li><span class="item-name">健康</span><span class="item-desc">compute_genome_health() 综合诊断</span></li>
+        <li><span class="item-name">策略</span><span class="item-desc">suggest_mutation_strategy() 变异建议</span></li>
+        <li><span class="item-name">门控</span><span class="item-desc">低置信度不触发变异 (min_confidence=0.3)</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent3">
+      <div class="card-title">🦴 EvolutionGenerationManager</div>
+      <div class="card-subtitle">脊椎 — 多代进化调度器</div>
+      <ul class="card-list">
+        <li><span class="item-name">状态机</span><span class="item-desc">PENDING→RUNNING→AGGREGATING→SELECTING→CRYSTALLIZING</span></li>
+        <li><span class="item-name">选择</span><span class="item-desc">10%温和淘汰+精英保留+多样性奖金</span></li>
+        <li><span class="item-name">移民</span><span class="item-desc">每代注入1-2个随机基因组</span></li>
+        <li><span class="item-name">Panarchy</span><span class="item-desc">r→K→Ω→α 自适应循环相变</span></li>
+        <li><span class="item-name">化石</span><span class="item-desc">每代完整快照 → checkpoint.json</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ Mycelium 十层 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🏛️</span> Mycelium AGI v4.0 — 十层架构</div>
+  <div class="layer-stack">
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(0,229,255,0.1);color:var(--accent1)">L0</span>
+      <span class="layer-name">核心基础设施</span>
+      <span class="layer-desc">EventBus / ModelRouter / CognitiveScheduler / SkillRegistry / SelfHealing / CrossLayerEmergence</span>
+      <span class="layer-files">7 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(0,229,255,0.08);color:var(--accent1)">L1</span>
+      <span class="layer-name">感知层</span>
+      <span class="layer-desc">液体感知器 / 脉冲神经网络编码</span>
+      <span class="layer-files">2 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(0,229,255,0.06);color:var(--accent1)">L2</span>
+      <span class="layer-name">模式层</span>
+      <span class="layer-desc">液态时间常数网络 / 多模型路由</span>
+      <span class="layer-files">2 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(124,255,110,0.1);color:var(--accent3)">L3</span>
+      <span class="layer-name">免疫+辩论层</span>
+      <span class="layer-desc">免疫验证 / 声明市场 / 辩论共识 / 菌根辩论网 / 中性因果验证</span>
+      <span class="layer-files">6 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(255,179,71,0.1);color:var(--accent4)">L4</span>
+      <span class="layer-name">执行+推理层</span>
+      <span class="layer-desc">因果调试 / RL编排 / 反事实推理 / 在线进化 / 任务DAG</span>
+      <span class="layer-files">5 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(255,110,199,0.1);color:var(--accent2)">L5</span>
+      <span class="layer-name">集群+Stigmergy层</span>
+      <span class="layer-desc">信息素场v2 / 群体自组织 / Agent通信 / 分布式共识 / 分布式进化</span>
+      <span class="layer-files">7 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(179,71,255,0.12);color:var(--accent5)">L6</span>
+      <span class="layer-name">元认知+进化层 ⭐</span>
+      <span class="layer-desc">元认知引擎 / 达尔文哥德尔机 / 架构扫描 / 自动重构 / 能力工厂 / 涌现结晶 / 规则进化 / 沙箱</span>
+      <span class="layer-files">14 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(71,212,255,0.1);color:var(--accent6)">L7</span>
+      <span class="layer-name">世界模型层</span>
+      <span class="layer-desc">主动推理(自由能原理) / 数字孪生引擎</span>
+      <span class="layer-files">2 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(255,255,255,0.06);color:#aaa">L8</span>
+      <span class="layer-name">自指涉层</span>
+      <span class="layer-desc">自指涉编译器 — 全系统基因组序列化 / 安全不变式检查</span>
+      <span class="layer-files">1 file</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(255,255,255,0.04);color:#888">L9</span>
+      <span class="layer-name">边缘层</span>
+      <span class="layer-desc">P2P网格 / 混合量子Agent (VQC+PPO+量子退火)</span>
+      <span class="layer-files">2 files</span>
+    </div>
+    <div class="layer-row">
+      <span class="layer-num" style="background:rgba(255,110,199,0.08);color:var(--accent2)">L10</span>
+      <span class="layer-name">治理+意识层</span>
+      <span class="layer-desc">宪政仲裁(GRACE道义逻辑·5门审查) / 意识内核(IIT+GWT+HOT统一)</span>
+      <span class="layer-files">2 files</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 水平子系统 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🔄</span> 水平子系统 — 横切所有层</div>
+  <div class="cards">
+    <div class="card c-accent5">
+      <div class="card-title">🧬 进化系统</div>
+      <ul class="card-list">
+        <li><span class="item-name">SelfEvolutionLoop</span><span class="item-desc">Actor→Judge→Meta-Judge→Prion</span></li>
+        <li><span class="item-name">DarwinianGodelMachine</span><span class="item-desc">5种突变+形式验证+Git基因组</span></li>
+        <li><span class="item-name">ParameterEvolver</span><span class="item-desc">传统GA(锦标赛+交叉+变异)</span></li>
+        <li><span class="item-name">AgentEvolver</span><span class="item-desc">阈值扩散/凋亡选择</span></li>
+        <li><span class="item-name">ArchitectureEvolver</span><span class="item-desc">Synaptation跨层协变</span></li>
+        <li><span class="item-name">PanarchyController</span><span class="item-desc">r→K→Ω→α自适应循环</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent3">
+      <div class="card-title">🛡️ 免疫系统</div>
+      <ul class="card-list">
+        <li><span class="item-name">NegativeSelector</span><span class="item-desc">负选择异常检测</span></li>
+        <li><span class="item-name">ClonalSelector</span><span class="item-desc">克隆选择自适应</span></li>
+        <li><span class="item-name">DendriticCell</span><span class="item-desc">树突细胞危险信号</span></li>
+        <li><span class="item-name">ImmuneMemory</span><span class="item-desc">免疫记忆持久化</span></li>
+        <li><span class="item-name">CUSUM/BOCD/HMM</span><span class="item-desc">统计异常检测器×3</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent1">
+      <div class="card-title">🌐 涌现系统</div>
+      <ul class="card-list">
+        <li><span class="item-name">TuringPatterning</span><span class="item-desc">反应扩散图灵模式</span></li>
+        <li><span class="item-name">MorphogenGradient</span><span class="item-desc">形态素浓度梯度</span></li>
+        <li><span class="item-name">SkillCatalysisGraph</span><span class="item-desc">自催化技能网络</span></li>
+        <li><span class="item-name">PhaseTransition</span><span class="item-desc">自组织临界性检测</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent4">
+      <div class="card-title">💾 记忆系统</div>
+      <ul class="card-list">
+        <li><span class="item-name">FractalEncoder</span><span class="item-desc">分形全息编码</span></li>
+        <li><span class="item-name">HolographicQuery</span><span class="item-desc">全息联想查询</span></li>
+        <li><span class="item-name">MemoryWeaving</span><span class="item-desc">跨层记忆编织</span></li>
+        <li><span class="item-name">MemoryBridge</span><span class="item-desc">L3→L6记忆桥接</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent2">
+      <div class="card-title">⚛️ 物理引擎</div>
+      <ul class="card-list">
+        <li><span class="item-name">Hamiltonian</span><span class="item-desc">系统哈密顿量</span></li>
+        <li><span class="item-name">DissipativeStructure</span><span class="item-desc">耗散结构动力学</span></li>
+        <li><span class="item-name">Thermodynamic</span><span class="item-desc">热力学熵监控</span></li>
+        <li><span class="item-name">DualModeEngine</span><span class="item-desc">量子-经典双模切换</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 对接点 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">🔗</span> MiroFish → Mycelium 对接点</div>
+  <div class="cards">
+    <div class="card c-accent1">
+      <div class="card-title">入口 ① · SelfEvolutionLoop.evolve()</div>
+      <div class="card-subtitle">MiroFish FCPI → Mycelium 适应度</div>
+      <ul class="card-list">
+        <li><span class="item-name">格式</span><span class="item-desc">{gene_id: {sharpe, consistency, diversity_contrib}}</span></li>
+        <li><span class="item-name">提供者</span><span class="item-desc">MyceliumBridge.to_mycelium_format()</span></li>
+        <li><span class="item-name">替代</span><span class="item-desc">旧: 0.5*sharpe + 0.3*consistency + 0.2*diversity</span></li>
+        <li><span class="item-name">新</span><span class="item-desc">六维社会涌现共识 → 单维兼容格式</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent5">
+      <div class="card-title">入口 ② · DGM.record_failure()</div>
+      <div class="card-subtitle">低分维度 → 触发基因变异</div>
+      <ul class="card-list">
+        <li><span class="item-name">coding&lt;0.3</span><span class="item-desc">→ "coding_deficiency" → INSERT变异</span></li>
+        <li><span class="item-name">safety&lt;0.3</span><span class="item-desc">→ "safety_violation" → SUBSTITUTE变异</span></li>
+        <li><span class="item-name">emergence&lt;0.1</span><span class="item-desc">→ "emergence_stagnation" → DUPLICATE变异</span></li>
+        <li><span class="item-name">提供者</span><span class="item-desc">DGMBridge.fcpi_to_failure_signals()</span></li>
+      </ul>
+    </div>
+    <div class="card c-accent3">
+      <div class="card-title">入口 ③ · Gene.fitness_score</div>
+      <div class="card-subtitle">高分维度 → 提升基因保留优先级</div>
+      <ul class="card-list">
+        <li><span class="item-name">coding&gt;0.7</span><span class="item-desc">→ function/class/skill基因 +0.1</span></li>
+        <li><span class="item-name">coordination&gt;0.7</span><span class="item-desc">→ bridge基因 +0.1</span></li>
+        <li><span class="item-name">提供者</span><span class="item-desc">DGMBridge.fcpi_to_gene_fitness_updates()</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 文件清单 ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="icon">📁</span> 完整文件清单</div>
+  <div class="stats-row">
+    <div class="stat-pill"><span class="dot d1"></span> MiroFish 新建: 15 文件</div>
+    <div class="stat-pill"><span class="dot d2"></span> Mycelium AGI: 155 文件</div>
+    <div class="stat-pill"><span class="dot d3"></span> 测试: 83 通过</div>
+    <div class="stat-pill"><span class="dot d1"></span> 桥接器: 5 个</div>
+    <div class="stat-pill"><span class="dot d2"></span> 总代码行: ~50,000+</div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+// ═══ Particle Background ═══
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.opacity = Math.random() * 0.4 + 0.1;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,229,255,${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) {
+  particles.push(new Particle());
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+
+  // Draw connections between nearby particles
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 140) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,229,255,${0.04 * (1 - dist / 140)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

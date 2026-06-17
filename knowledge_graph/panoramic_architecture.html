@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sclerotium OS — 超级生命体完整架构图 v5.2</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#060610;color:#d0d0d8;overflow-x:hidden}
+svg{display:block}
+.tip{position:absolute;pointer-events:none;background:rgba(6,6,16,0.97);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;font-size:13px;max-width:380px;line-height:1.6;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.7);display:none}
+.tip h3{margin:0 0 6px;font-size:16px}
+.tip .tech{display:inline-block;background:rgba(255,255,255,0.08);border-radius:4px;padding:2px 8px;margin:2px;font-size:11px}
+.tip .conn{font-size:11px;color:#888;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// COMPLETE MODULE DATA — extracted from .codegraph/codegraph.db
+// ═══════════════════════════════════════════════════════════════
+const MODULES = [
+  // EXTERNAL SYSTEMS
+  {id:"fungal-cortex", name:"Fungal Cortex", icon:"🧠", desc:"大脑+内脏+免疫+记忆", tech:["107K nodes","6073 skills","6.3K files","L0-L10 Layers","276K edges"], color:"#7c3aed", group:"external", x:0, y:0},
+  {id:"mirofish", name:"MiroFish", icon:"🐟", desc:"进化引擎+6竞技场+Panarchy", tech:["2.4K nodes","8D FullBodyGenome","6 Arenas","LLM Simulation","FCPI Evolution"], color:"#f59e0b", group:"external", x:0, y:0},
+
+  // INTERFACE LAYER — user-facing
+  {id:"cli", name:"CLI终端", icon:"💻", desc:"Terminal TUI — 用户交互主界面", tech:["Rich库 (Markdown/Panel/Rule)","Textual (TUI框架)","asyncio 异步","hashlib 缓存","concurrent.futures"], color:"#574b90", group:"interface", x:0, y:0},
+  {id:"sdk", name:"SDK", icon:"📦", desc:"外部开发接口 — 第三方集成", tech:["aiohttp HTTP客户端","JSON序列化","类型安全 Typing","StreamEvent 流式API"], color:"#c44569", group:"interface", x:0, y:0},
+  {id:"ui", name:"UI仪表盘", icon:"📊", desc:"Web仪表盘+桌面通知+快捷栏", tech:["http.server (Web)","tkinter (GUI)","ctypes.wintypes (Win)","Toast通知系统","Alt+Space快捷栏"], color:"#7ed6df", group:"interface", x:0, y:0},
+
+  // INTELLIGENCE LAYER — AI + tools
+  {id:"agent", name:"Agent智能体", icon:"🤖", desc:"AI决策引擎 — LLM驱动的Agent循环", tech:["aiohttp SSE流式","DeepSeek/Claude/GPT","Code-as-Action运行时","5层上下文压缩","多模型路由"], color:"#4ecdc4", group:"intelligence", x:0, y:0},
+  {id:"mcp", name:"MCP工具", icon:"🔧", desc:"模型上下文协议 — 208工具/31类别", tech:["JSON-RPC 2.0协议","ToolRegistry注册中心","Schema验证 (Pydantic)","SSE Streaming","外部MCP桥接"], color:"#45b7d1", group:"intelligence", x:0, y:0},
+  {id:"gateways", name:"网关", icon:"🌐", desc:"多模型+市场+技能统一接入", tech:["100+AI模型提供商","MCP市场网关","Skills市场中心","urllib HTTP","线程安全路由"], color:"#be2edd", group:"intelligence", x:0, y:0},
+
+  // PLATFORM LAYER — I/O channels
+  {id:"platforms", name:"IM平台", icon:"💬", desc:"多渠道消息 — 微信/QQ/Telegram/飞书", tech:["iLink微信 (长轮询)","OneBot QQ (WebSocket)","Telegram Bot API","飞书开放平台","队列出站(Queue+Lock)"], color:"#6ab04c", group:"platform", x:0, y:0},
+  {id:"automation", name:"桌面自动化", icon:"🖥", desc:"三通道控制 — 截图+UIA+输入模拟", tech:["pywinauto (UIA)","PIL/Pillow (截图)","pyautogui (键鼠)","psutil (进程)","numpy (图像)","ctypes WinAPI"], color:"#eb4d4b", group:"platform", x:0, y:0},
+  {id:"perception", name:"感知系统", icon:"👁", desc:"五感采集 — 活动/剪贴板/文件/窗口", tech:["watchdog (文件监控)","ctypes WinAPI","GetLastInputInfo (空闲)","剪贴板监听","窗口标题追踪"], color:"#e056a0", group:"platform", x:0, y:0},
+
+  // ORCHESTRATION LAYER — control systems
+  {id:"evolution", name:"进化引擎", icon:"🧬", desc:"DGM遗传算法+FCPI六维追踪", tech:["DGM变异算子","FCPI六维向量","技能结晶化","紧急模式涌现","适应度追踪"], color:"#f9ca24", group:"orchestration", x:0, y:0},
+  {id:"rhythm", name:"节律系统", icon:"💓", desc:"STG心跳+生物钟+微推引擎", tech:["LTC节奏网络","每日摘要生成","Nudge微推决策","threading定时器","活动指标分析"], color:"#22a6b3", group:"orchestration", x:0, y:0},
+  {id:"scheduler", name:"任务调度", icon:"⏰", desc:"定时任务引擎 — 持久化+真实执行", tech:["APScheduler (Background)","Cron/Interval/Date触发","JSONL结果持久化","threading.Timer兜底","Handler工厂模式"], color:"#535c68", group:"orchestration", x:0, y:0},
+  {id:"orchestrator", name:"编排器", icon:"🎯", desc:"生命周期管理 — 全器官协调", tech:["LifecycleManager","阶段状态机","器官状态追踪","threading并发"], color:"#130f40", group:"orchestration", x:0, y:0},
+
+  // KNOWLEDGE LAYER — cognitive
+  {id:"memory", name:"记忆洞察", icon:"🧿", desc:"战略分析引擎 — 模式发现", tech:["InsightEngine","InsightCategory","模式识别","typing类型安全"], color:"#ffbe76", group:"knowledge", x:0, y:0},
+  {id:"field", name:"信息素场", icon:"🏟", desc:"群体智慧 — 间接协作场域", tech:["StigmergyBridge v2","信息素场状态","TrailEntry追踪","threading并发"], color:"#dff9fb", group:"knowledge", x:0, y:0},
+  {id:"world", name:"数字孪生", icon:"🌍", desc:"系统镜像+主动推理智能体", tech:["DigitalTwinEngine","ActiveInferenceAgent","ActionPolicy","SystemSnapshot"], color:"#f6e58d", group:"knowledge", x:0, y:0},
+
+  // CORE — brain
+  {id:"kernel", name:"内核 KERNEL", icon:"🧬", desc:"系统灵魂 — 五层记忆+宪法审查+沙箱", tech:["HexisMemory (5层)","ConstitutionalArbiter (5门)","SandstormExecutor (L0-L1)","chromadb向量存储","sqlite3持久化","asyncio异步","hashlib审计"], color:"#ff6b6b", group:"core", x:0, y:0},
+
+  // INFRASTRUCTURE — glue
+  {id:"bridges", name:"桥接器", icon:"🌉", desc:"三系统融合 — 238器官映射", tech:["FungalBridge","MiroFishBridge","OrganStatus","60+双向数据流"], color:"#c7ecee", group:"infra", x:0, y:0},
+  {id:"daemon", name:"守护进程", icon:"🛡", desc:"系统服务+托盘图标 — 开机自启", tech:["Windows Service","TrayController","系统托盘","threading守护","持久化状态"], color:"#30336b", group:"infra", x:0, y:0},
+];
+
+// ═══════════════════════════════════════════════════════════════
+// CROSS-MODULE CONNECTIONS — real import data
+// ═══════════════════════════════════════════════════════════════
+const CONNECTIONS = [
+  // kernel <-> everyone (core connections)
+  {s:"kernel", t:"agent", c:248, label:"AgentLoop调用"},
+  {s:"kernel", t:"mcp", c:356, label:"ToolRegistry注册"},
+  {s:"kernel", t:"evolution", c:189, label:"进化信号"},
+  {s:"kernel", t:"platforms", c:156, label:"消息回调"},
+  {s:"kernel", t:"automation", c:87, label:"桌面指令"},
+  {s:"kernel", t:"gateways", c:65, label:"模型路由"},
+  {s:"kernel", t:"ui", c:6, label:"仪表盘数据"},
+  {s:"kernel", t:"memory", c:1, label:"记忆查询"},
+  {s:"kernel", t:"cli", c:2, label:"CLI启动"},
+
+  // agent <-> mcp
+  {s:"agent", t:"mcp", c:210, label:"Function Calling"},
+
+  // mcp <-> platforms/automation/gateways
+  {s:"mcp", t:"platforms", c:134, label:"IM消息发送"},
+  {s:"mcp", t:"automation", c:112, label:"桌面工具调用"},
+  {s:"mcp", t:"gateways", c:98, label:"市场工具代理"},
+  {s:"mcp", t:"scheduler", c:2, label:"定时任务触发"},
+  {s:"mcp", t:"memory", c:2, label:"记忆存取"},
+  {s:"mcp", t:"evolution", c:1, label:"进化触发"},
+  {s:"mcp", t:"ui", c:1, label:"仪表盘API"},
+
+  // agent <-> others
+  {s:"agent", t:"ui", c:2, label:"Streaming输出"},
+  {s:"agent", t:"cli", c:1, label:"Agent启动"},
+
+  // bridges <-> external
+  {s:"bridges", t:"fungal-cortex", c:60, label:"器官数据流"},
+  {s:"bridges", t:"mirofish", c:40, label:"基因组同步"},
+
+  // daemon <-> orchestrator
+  {s:"daemon", t:"orchestrator", c:2, label:"生命周期启动"},
+
+  // automation <-> ui
+  {s:"automation", t:"ui", c:1, label:"截图预览"},
+
+  // sdk <-> cli
+  {s:"sdk", t:"cli", c:1, label:"SDK导入"},
+
+  // perception <-> cli
+  {s:"perception", t:"cli", c:2, label:"感知展示"},
+];
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function init() {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const svg = d3.select('body').append('svg').attr('width',W).attr('height',H);
+
+  // Background
+  svg.append('rect').attr('width',W).attr('height',H).attr('fill','#060610');
+  // Subtle grid
+  for (let x=0;x<W;x+=80) svg.append('line').attr('x1',x).attr('y1',0).attr('x2',x).attr('y2',H).attr('stroke','#ffffff04').attr('stroke-width',0.5);
+  for (let y=0;y<H;y+=80) svg.append('line').attr('x1',0).attr('y1',y).attr('x2',W).attr('y2',y).attr('stroke','#ffffff04').attr('stroke-width',0.5);
+
+  // Layout config
+  const groups = {
+    external: {label:"外部系统", x:W-200, y:60, w:140, h:200},
+    interface: {label:"界面层 Interface", x:40, y:50, w:160, h:210},
+    intelligence: {label:"智能层 Intelligence", x:40, y:280, w:160, h:210},
+    platform: {label:"平台层 Platform", x:240, y:50, w:160, h:210},
+    orchestration: {label:"编排层 Orchestration", x:240, y:280, w:160, h:280},
+    knowledge: {label:"认知层 Knowledge", x:440, y:50, w:140, h:210},
+    core: {label:"核心 Core", x:440, y:320, w:140, h:140},
+    infra: {label:"基础设施 Infra", x:600, y:50, w:140, h:140},
+  };
+
+  // Position modules within groups
+  const modulePos = {};
+  MODULES.forEach(m => {
+    const g = groups[m.group];
+    if (!g) return;
+    const members = MODULES.filter(mm => mm.group === m.group);
+    const idx = members.indexOf(m);
+    const gap = 8;
+    const perH = (g.h - gap * (members.length+1)) / members.length;
+    m._x = g.x + 10;
+    m._y = g.y + gap + idx * (perH + gap);
+    m._w = g.w - 20;
+    m._h = perH;
+    modulePos[m.id] = m;
+  });
+
+  // Draw group backgrounds
+  const groupsG = svg.append('g');
+  Object.entries(groups).forEach(([gid, g]) => {
+    groupsG.append('rect')
+      .attr('x',g.x).attr('y',g.y).attr('width',g.w).attr('height',g.h)
+      .attr('rx',8).attr('fill','#ffffff03').attr('stroke','#ffffff08').attr('stroke-width',1);
+    groupsG.append('text')
+      .attr('x',g.x+g.w/2).attr('y',g.y-8).attr('text-anchor','middle')
+      .attr('fill','#ffffff20').attr('font-size','10px').attr('font-weight','600')
+      .text(g.label);
+  });
+
+  // Title
+  svg.append('text').attr('x',W/2).attr('y',30).attr('text-anchor','middle')
+    .attr('fill','#fff').attr('font-size','24px').attr('font-weight','700')
+    .text('🧬 Sclerotium OS v5.2 — 超级生命体完整架构图');
+
+  // Subtitle with stats
+  svg.append('text').attr('x',W/2).attr('y',52).attr('text-anchor','middle')
+    .attr('fill','#666').attr('font-size','11px')
+    .text('数据来源: .codegraph/codegraph.db | 7,131节点 · 15,237边 · 331文件 · 208 MCP工具 · 三系统融合(238器官)');
+
+  // ═══════════════════════════════════════════════════════════
+  // Draw connections
+  // ═══════════════════════════════════════════════════════════
+  const connG = svg.append('g');
+  CONNECTIONS.forEach(conn => {
+    const src = modulePos[conn.s];
+    const tgt = modulePos[conn.t];
+    if (!src || !tgt) return;
+    const sx = src._x + src._w, sy = src._y + src._h/2;
+    const tx = tgt._x, ty = tgt._y + tgt._h/2;
+    const mx = (sx + tx) / 2;
+    const opacity = Math.max(0.08, Math.min(0.6, conn.c / 200));
+    const width = Math.max(0.5, Math.min(4, Math.log2(conn.c + 1) * 0.8));
+
+    connG.append('path')
+      .attr('d', `M${sx},${sy} C${mx},${sy} ${mx},${ty} ${tx},${ty}`)
+      .attr('fill','none')
+      .attr('stroke', src.color)
+      .attr('stroke-width', width)
+      .attr('opacity', opacity)
+      .attr('stroke-dasharray', conn.s.startsWith('bridge') ? '6,3' : null);
+
+    // Edge label for strong connections
+    if (conn.c > 50) {
+      connG.append('text')
+        .attr('x', mx).attr('y', (sy + ty) / 2 - 5)
+        .attr('text-anchor','middle')
+        .attr('fill','#ffffff30').attr('font-size','8px')
+        .text(conn.label || `${conn.c} edges`);
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Draw module cards
+  // ═══════════════════════════════════════════════════════════
+  const cardsG = svg.append('g');
+
+  MODULES.forEach(m => {
+    const g = cardsG.append('g')
+      .attr('transform',`translate(${m._x},${m._y})`)
+      .style('cursor','pointer')
+      .on('mouseenter',(e)=>showTip(e,m))
+      .on('mouseleave',hideTip)
+      .on('click',(e)=>showDetail(m));
+
+    // Card background
+    g.append('rect')
+      .attr('width',m._w).attr('height',m._h)
+      .attr('rx',6).attr('fill',m.color+'15')
+      .attr('stroke',m.color).attr('stroke-width',1.5).attr('stroke-opacity',0.6);
+
+    // Left accent bar
+    g.append('rect')
+      .attr('width',3).attr('height',m._h-12).attr('x',4).attr('y',6)
+      .attr('rx',2).attr('fill',m.color);
+
+    // Icon + Name
+    g.append('text')
+      .attr('x',14).attr('y',m._h > 70 ? 22 : 18)
+      .attr('fill',m.color).attr('font-size',m._h > 60 ? '13px' : '11px').attr('font-weight','700')
+      .text(`${m.icon} ${m.name}`);
+
+    // Description
+    if (m._h > 50) {
+      g.append('text')
+        .attr('x',14).attr('y',m._h > 70 ? 36 : 30)
+        .attr('fill','#888').attr('font-size','9px')
+        .text(m.desc.substring(0, m._w > 120 ? 35 : 25));
+    }
+
+    // Tech tags (for larger cards)
+    if (m._h > 70 && m.tech) {
+      m.tech.slice(0, 3).forEach((t, i) => {
+        g.append('text')
+          .attr('x',14).attr('y', 48 + i * 13)
+          .attr('fill','#555').attr('font-size','8px')
+          .text(`• ${t.substring(0, m._w > 120 ? 30 : 20)}`);
+      });
+    }
+
+    // Class count badge
+    if (m.group !== 'external') {
+      g.append('text')
+        .attr('x',m._w-8).attr('y',m._h > 60 ? 20 : 16)
+        .attr('text-anchor','end')
+        .attr('fill',m.color+'40')
+        .attr('font-size',m._h > 60 ? '18px' : '14px').attr('font-weight','800')
+        .text(m.tech ? m.tech.length : '');
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Legend (bottom)
+  // ═══════════════════════════════════════════════════════════
+  const legendG = svg.append('g').attr('transform',`translate(20,${H-140})`);
+  legendG.append('text').attr('fill','#555').attr('font-size','10px').text('模块分组:');
+  const grpColors = {
+    '界面层':'#7ed6df','智能层':'#4ecdc4','平台层':'#eb4d4b',
+    '编排层':'#f9ca24','认知层':'#ffbe76','核心':'#ff6b6b',
+    '基础设施':'#30336b','外部系统':'#7c3aed'
+  };
+  let gi = 0;
+  Object.entries(grpColors).forEach(([name, color]) => {
+    const x = gi * 110;
+    legendG.append('rect').attr('x',x).attr('y',15).attr('width',10).attr('height',10).attr('rx',2).attr('fill',color);
+    legendG.append('text').attr('x',x+14).attr('y',24).attr('fill','#666').attr('font-size','9px').text(name);
+    gi++;
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Tooltip
+  // ═══════════════════════════════════════════════════════════
+  function showTip(e, m) {
+    const tip = document.getElementById('tip');
+    tip.style.display = 'block';
+    tip.style.left = Math.min(e.pageX+15, W-400) + 'px';
+    tip.style.top = Math.min(e.pageY-15, H-300) + 'px';
+    const techTags = (m.tech||[]).map(t => `<span class="tech">${t}</span>`).join(' ');
+    tip.innerHTML = `<h3 style="color:${m.color}">${m.icon} ${m.name}</h3><div style="color:#aaa;font-size:12px;margin-bottom:6px">${m.desc}</div><div>${techTags}</div>`;
+  }
+  function hideTip(){document.getElementById('tip').style.display='none';}
+
+  function showDetail(m) {
+    const tip = document.getElementById('tip');
+    const conns = CONNECTIONS.filter(c => c.s===m.id || c.t===m.id);
+    const techTags = (m.tech||[]).map(t => `<span class="tech">${t}</span>`).join(' ');
+    const connHTML = conns.length > 0 ? conns.map(c => {
+      const other = modulePos[c.s===m.id ? c.t : c.s];
+      return `<div class="conn">↔ ${other?other.name:c.s===m.id?c.t:c.s}: ${c.label||c.c+' edges'}</div>`;
+    }).join('') : '';
+    tip.style.display = 'block';
+    tip.style.left = Math.min(window.innerWidth/2-200, W-420) + 'px';
+    tip.style.top = '60px';
+    tip.innerHTML = `
+      <h3 style="color:${m.color};font-size:18px">${m.icon} ${m.name}</h3>
+      <div style="color:#aaa;font-size:12px;margin-bottom:8px">${m.desc}</div>
+      <div style="margin-bottom:8px">${techTags}</div>
+      ${connHTML ? '<div style="font-weight:600;color:#bbb;margin-top:10px;margin-bottom:4px">🔗 连接关系 ('+conns.length+'):</div>'+connHTML : ''}
+      <div style="margin-top:10px;font-size:10px;color:#555">点击其他位置关闭</div>
+    `;
+    setTimeout(() => {
+      document.addEventListener('click', function closeD(){tip.style.display='none';document.removeEventListener('click',closeD);},{once:true});
+    },100);
+  }
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+else init();
+</script>
+</body>
+</html>

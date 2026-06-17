@@ -1,0 +1,286 @@
+{
+  "timestamp": "2026-06-16T12:57:41.847198",
+  "summary": {
+    "total": 24,
+    "passed": 23,
+    "failed": 1,
+    "pass_rate": "95.8%",
+    "domains": {
+      "01-health": {
+        "total": 1,
+        "passed": 1
+      },
+      "02-tools": {
+        "total": 1,
+        "passed": 1
+      },
+      "18-dashboard": {
+        "total": 1,
+        "passed": 1
+      },
+      "22-data-integrity": {
+        "total": 1,
+        "passed": 1
+      },
+      "03-filesystem": {
+        "total": 2,
+        "passed": 2
+      },
+      "05-shell": {
+        "total": 1,
+        "passed": 1
+      },
+      "20-os": {
+        "total": 1,
+        "passed": 1
+      },
+      "23-bash": {
+        "total": 1,
+        "passed": 1
+      },
+      "06-web": {
+        "total": 2,
+        "passed": 2
+      },
+      "08-memory": {
+        "total": 2,
+        "passed": 2
+      },
+      "10-desktop": {
+        "total": 1,
+        "passed": 1
+      },
+      "11-system": {
+        "total": 1,
+        "passed": 1
+      },
+      "12-skills": {
+        "total": 1,
+        "passed": 1
+      },
+      "13-organs": {
+        "total": 1,
+        "passed": 1
+      },
+      "14-evolution": {
+        "total": 1,
+        "passed": 1
+      },
+      "15-safety": {
+        "total": 1,
+        "passed": 1
+      },
+      "16-agent-loop": {
+        "total": 2,
+        "passed": 1
+      },
+      "17-providers": {
+        "total": 1,
+        "passed": 1
+      },
+      "19-code": {
+        "total": 1,
+        "passed": 1
+      },
+      "21-scheduler": {
+        "total": 1,
+        "passed": 1
+      }
+    },
+    "elapsed": "147.8s"
+  },
+  "results": [
+    {
+      "domain": "01-health",
+      "test": "Gateway health check",
+      "passed": true,
+      "evidence": "Server status=ok, tools=270",
+      "duration_ms": 1.0023117065429688,
+      "error": ""
+    },
+    {
+      "domain": "02-tools",
+      "test": "Tool registry list",
+      "passed": true,
+      "evidence": "Total tools registered: 270",
+      "duration_ms": 22.646427154541016,
+      "error": ""
+    },
+    {
+      "domain": "18-dashboard",
+      "test": "Full dashboard data API",
+      "passed": true,
+      "evidence": "Data keys: ['organs', 'fcpi', 'genome', 'arbiter', 'agents', 'providers', 'tokens', 'memory', 'features', 'external', 'skills', 'tools', 'health']",
+      "duration_ms": 913.6316776275635,
+      "error": ""
+    },
+    {
+      "domain": "22-data-integrity",
+      "test": "API data integrity check",
+      "passed": true,
+      "evidence": "Verified live fields: ['organs', 'health', 'features', 'genome']",
+      "duration_ms": 66.42699241638184,
+      "error": ""
+    },
+    {
+      "domain": "03-filesystem",
+      "test": "File write",
+      "passed": true,
+      "evidence": "File exists=True, content=Sclerotium OS parity test at 2026-06-16 12:55:15.380990",
+      "duration_ms": 6080.47342300415,
+      "error": ""
+    },
+    {
+      "domain": "03-filesystem",
+      "test": "File read",
+      "passed": true,
+      "evidence": "Response has content=True",
+      "duration_ms": 4184.625148773193,
+      "error": ""
+    },
+    {
+      "domain": "05-shell",
+      "test": "Shell command execution",
+      "passed": true,
+      "evidence": "Tool results=1, content=```powershell\nHello from Sclerotium\n2026/06/16 星期二\n\nMicrosoft Windows [版本 10.0.26200.8457]\n```\n\nWindows 11 build 26200.8457 — Sclerotium OS 在线, sir.",
+      "duration_ms": 3585.3986740112305,
+      "error": ""
+    },
+    {
+      "domain": "20-os",
+      "test": "OS command suite",
+      "passed": true,
+      "evidence": "Commands executed, tool_results=4",
+      "duration_ms": 9112.546920776367,
+      "error": ""
+    },
+    {
+      "domain": "23-bash",
+      "test": "Smart bash execution",
+      "passed": true,
+      "evidence": "Command output received",
+      "duration_ms": 15274.410009384155,
+      "error": ""
+    },
+    {
+      "domain": "06-web",
+      "test": "Web search",
+      "passed": true,
+      "evidence": "Content length=0, tool_results=8",
+      "duration_ms": 30805.988311767578,
+      "error": ""
+    },
+    {
+      "domain": "06-web",
+      "test": "Web fetch URL",
+      "passed": true,
+      "evidence": "Response received=True",
+      "duration_ms": 13418.833255767822,
+      "error": ""
+    },
+    {
+      "domain": "08-memory",
+      "test": "Memory store",
+      "passed": true,
+      "evidence": "Chat response received",
+      "duration_ms": 7367.482900619507,
+      "error": ""
+    },
+    {
+      "domain": "08-memory",
+      "test": "Memory search",
+      "passed": true,
+      "evidence": "Search performed",
+      "duration_ms": 4509.086132049561,
+      "error": ""
+    },
+    {
+      "domain": "10-desktop",
+      "test": "Desktop app open (Notepad)",
+      "passed": true,
+      "evidence": "Notepad running=True, tool_results=1",
+      "duration_ms": 3579.0610313415527,
+      "error": ""
+    },
+    {
+      "domain": "11-system",
+      "test": "System information query",
+      "passed": true,
+      "evidence": "Response length=621",
+      "duration_ms": 16818.556547164917,
+      "error": ""
+    },
+    {
+      "domain": "12-skills",
+      "test": "Skills inventory",
+      "passed": true,
+      "evidence": "Skills loaded: 200",
+      "duration_ms": 2.318859100341797,
+      "error": ""
+    },
+    {
+      "domain": "13-organs",
+      "test": "Organ ecosystem status",
+      "passed": true,
+      "evidence": "Total organs: 400, breakdown: {'sclerotium_organs': 252, 'sclerotium_dirs': [{'dir': 'kernel', 'count': 118}, {'dir': 'mcp', 'count': 33}, {'dir': 'cli', 'count': 20}, {'dir': 'root', 'count': 15}, {'dir': 'ui', 'count': 10}, {'dir': 'agent', 'count': 7}, {'dir': 'platforms', 'count': 7}, {'dir': 'automation', 'count': 6}, {'dir': 'evolution', 'count': 6}, {'dir': 'gateways', 'count': 6}, {'dir': 'perception', 'count': 6}, {'dir': 'rhythm', 'count': 4}, {'dir': 'bridges', 'count': 2}, {'dir': 'daemon', 'count': 2}, {'dir': 'field', 'count': 2}, {'dir': 'scheduler', 'count': 2}, {'dir': 'sdk', 'count': 2}, {'dir': 'world', 'count': 2}, {'dir': 'memory', 'count': 1}, {'dir': 'orchestrator', 'count': 1}], 'fungal_organs': 120, 'mirofish_organs': 28}",
+      "duration_ms": 80.66511154174805,
+      "error": ""
+    },
+    {
+      "domain": "14-evolution",
+      "test": "8D Genome status",
+      "passed": true,
+      "evidence": "Generation=7, Fitness=0.7649",
+      "duration_ms": 3.0829906463623047,
+      "error": ""
+    },
+    {
+      "domain": "15-safety",
+      "test": "CUGA Arbiter safety",
+      "passed": true,
+      "evidence": "Mode=ApprovalMode.DEFAULT, CUGA=True",
+      "duration_ms": 1.0104179382324219,
+      "error": ""
+    },
+    {
+      "domain": "16-agent-loop",
+      "test": "Multi-turn conversation",
+      "passed": true,
+      "evidence": "Response: Your name is **TestUser**, and you like **Python**. Got it locked in memory. 🐍",
+      "duration_ms": 6165.943145751953,
+      "error": ""
+    },
+    {
+      "domain": "16-agent-loop",
+      "test": "Multi-turn Conversation",
+      "passed": false,
+      "evidence": "",
+      "duration_ms": 0,
+      "error": "'gbk' codec can't encode character '\\U0001f40d' in position 94: illegal multibyte sequence"
+    },
+    {
+      "domain": "17-providers",
+      "test": "AI provider chain",
+      "passed": true,
+      "evidence": "Providers=5, Chain=['deepseek', 'openai', 'groq', 'openrouter', 'ollama']",
+      "duration_ms": 1.008749008178711,
+      "error": ""
+    },
+    {
+      "domain": "19-code",
+      "test": "Code file analysis",
+      "passed": true,
+      "evidence": "Analysis performed, content_len=4053",
+      "duration_ms": 19865.334272384644,
+      "error": ""
+    },
+    {
+      "domain": "21-scheduler",
+      "test": "Task scheduling",
+      "passed": true,
+      "evidence": "Schedule response received",
+      "duration_ms": 5310.504198074341,
+      "error": ""
+    }
+  ]
+}

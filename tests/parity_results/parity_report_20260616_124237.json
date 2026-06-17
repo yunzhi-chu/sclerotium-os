@@ -1,0 +1,122 @@
+{
+  "timestamp": "2026-06-16T12:42:37.576043",
+  "summary": {
+    "total": 9,
+    "passed": 8,
+    "failed": 1,
+    "pass_rate": "88.9%",
+    "domains": {
+      "01-health": {
+        "total": 1,
+        "passed": 1
+      },
+      "02-tools": {
+        "total": 1,
+        "passed": 1
+      },
+      "18-dashboard": {
+        "total": 1,
+        "passed": 1
+      },
+      "22-data-integrity": {
+        "total": 1,
+        "passed": 1
+      },
+      "12-skills": {
+        "total": 1,
+        "passed": 1
+      },
+      "13-organs": {
+        "total": 1,
+        "passed": 0
+      },
+      "14-evolution": {
+        "total": 1,
+        "passed": 1
+      },
+      "15-safety": {
+        "total": 1,
+        "passed": 1
+      },
+      "17-providers": {
+        "total": 1,
+        "passed": 1
+      }
+    },
+    "elapsed": "0.4s"
+  },
+  "results": [
+    {
+      "domain": "01-health",
+      "test": "Gateway health check",
+      "passed": true,
+      "evidence": "Server status=ok, tools=270",
+      "duration_ms": 22.53127098083496,
+      "error": ""
+    },
+    {
+      "domain": "02-tools",
+      "test": "Tool registry list",
+      "passed": true,
+      "evidence": "Total tools registered: 270",
+      "duration_ms": 3.3867359161376953,
+      "error": ""
+    },
+    {
+      "domain": "18-dashboard",
+      "test": "Full dashboard data API",
+      "passed": true,
+      "evidence": "Data keys: ['organs', 'fcpi', 'genome', 'arbiter', 'agents', 'providers', 'tokens', 'memory', 'features', 'external', 'skills', 'tools', 'health']",
+      "duration_ms": 5.926370620727539,
+      "error": ""
+    },
+    {
+      "domain": "22-data-integrity",
+      "test": "API data integrity check",
+      "passed": true,
+      "evidence": "Verified live fields: ['organs', 'health', 'features', 'genome']",
+      "duration_ms": 4.700660705566406,
+      "error": ""
+    },
+    {
+      "domain": "12-skills",
+      "test": "Skills inventory",
+      "passed": true,
+      "evidence": "Skills loaded: 200",
+      "duration_ms": 15.120983123779297,
+      "error": ""
+    },
+    {
+      "domain": "13-organs",
+      "test": "Organ ecosystem status",
+      "passed": false,
+      "evidence": "Total organs: 31, breakdown: {}",
+      "duration_ms": 2.2504329681396484,
+      "error": ""
+    },
+    {
+      "domain": "14-evolution",
+      "test": "8D Genome status",
+      "passed": true,
+      "evidence": "Generation=0, Fitness=0.0",
+      "duration_ms": 4.208564758300781,
+      "error": ""
+    },
+    {
+      "domain": "15-safety",
+      "test": "CUGA Arbiter safety",
+      "passed": true,
+      "evidence": "Mode=ApprovalMode.DEFAULT, CUGA=True",
+      "duration_ms": 23.984670639038086,
+      "error": ""
+    },
+    {
+      "domain": "17-providers",
+      "test": "AI provider chain",
+      "passed": true,
+      "evidence": "Providers=5, Chain=['deepseek', 'openai', 'groq', 'openrouter', 'ollama']",
+      "duration_ms": 2.2597312927246094,
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧬 Trinity Super-Lifeform — 117K 全量知识图谱</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:#08080f;color:#c8c8d0;overflow:hidden;height:100vh;display:flex;flex-direction:column;
+  }
+  #toolbar{
+    height:44px;background:#0d0d1a;border-bottom:1px solid #1a1a2e;
+    display:flex;align-items:center;gap:8px;padding:0 14px;z-index:10;flex-shrink:0;
+  }
+  #toolbar .brand{font-size:13px;font-weight:700;color:#00d4aa;margin-right:8px;white-space:nowrap}
+  #toolbar button{
+    padding:5px 11px;border:1px solid #1a1a2e;border-radius:5px;
+    background:#111122;color:#a0a0c0;cursor:pointer;font-size:10px;font-family:inherit;white-space:nowrap;
+  }
+  #toolbar button:hover{background:#1a1a3e;border-color:#3a3a5e;color:#e0e0ff}
+  #toolbar button.on{background:#0a2a1a;border-color:#00d4aa;color:#00d4aa}
+  #toolbar .sep{width:1px;height:18px;background:#1a1a2e;margin:0 3px}
+  #toolbar input[type=text]{
+    padding:5px 10px;background:#111122;border:1px solid #1a1a2e;border-radius:5px;
+    color:#c8c8d0;font-size:10px;width:160px;font-family:inherit;
+  }
+  #toolbar input:focus{outline:none;border-color:#00d4aa}
+  #toolbar .stat{font-size:9px;color:#5a5a7a;white-space:nowrap}
+  #main{display:flex;flex:1;overflow:hidden}
+  #canvas{flex:1;position:relative}
+  #panel{
+    width:280px;background:#0d0d18;border-left:1px solid #1a1a2e;
+    display:flex;flex-direction:column;overflow-y:auto;z-index:5;flex-shrink:0;
+  }
+  #panel .sec{padding:10px 14px;border-bottom:1px solid #1a1a2e}
+  #panel h3{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#5a5a7a;margin-bottom:8px}
+  #detail{display:none;padding:12px 14px}
+  #detail.show{display:block}
+  #detail h2{font-size:13px;margin-bottom:3px;word-break:break-all}
+  #detail .kind{font-size:9px;padding:2px 7px;border-radius:3px;display:inline-block;margin:3px 0 8px}
+  #detail .row{display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid #1a1a2e}
+  #detail .row .k{color:#5a5a7a}
+  #detail .row .v{color:#c8c8d0;text-align:right;word-break:break-all}
+  #loading{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;z-index:20;
+    background:rgba(8,8,15,.95);transition:opacity .4s;
+  }
+  #loading.hidden{opacity:0;pointer-events:none}
+  .spinner{width:40px;height:40px;border:3px solid #1a1a2e;border-top-color:#00d4aa;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #loadMsg{color:#888;font-size:12px;margin-top:12px;text-align:center;max-width:400px}
+  .bar{width:280px;height:4px;background:#1a1a2e;border-radius:2px;margin-top:10px;overflow:hidden}
+  .bar-fill{height:100%;background:#00d4aa;transition:width .3s;width:0%}
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:#111122;border:1px solid #00d4aa;color:#00d4aa;
+    padding:10px 24px;border-radius:20px;font-size:12px;z-index:99;
+    opacity:0;transition:opacity .3s;pointer-events:none;
+  }
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <span class="brand">🧬 Trinity KG</span>
+  <button onclick="relayout()">🔀 布局</button>
+  <button onclick="graph.fitView({padding:40,duration:400})">📐 适应</button>
+  <span class="sep"></span>
+  <button class="on" data-sys="all" onclick="filterSys('all',this)">全部</button>
+  <button data-sys="sclerotium-os" onclick="filterSys('sclerotium-os',this)">🦠 Scl</button>
+  <button data-sys="fungal-cortex" onclick="filterSys('fungal-cortex',this)">🧠 Fun</button>
+  <button data-sys="mirofish" onclick="filterSys('mirofish',this)">🐟 Mir</button>
+  <span class="sep"></span>
+  <input type="text" id="search" placeholder="🔍 搜索..." oninput="doSearch(this.value)" />
+  <span class="sep"></span>
+  <span class="stat" id="statBar"></span>
+</div>
+
+<div id="main">
+  <div id="canvas">
+    <div id="loading">
+      <div class="spinner"></div>
+      <div class="msg" id="loadMsg">正在加载图谱数据...</div>
+      <div class="bar"><div class="bar-fill" id="loadBar"></div></div>
+    </div>
+  </div>
+  <div id="panel">
+    <div class="sec">
+      <h3>📊 统计</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:9px">
+        <div style="background:#111122;padding:6px;border-radius:4px;text-align:center">
+          <div style="color:#00d4aa;font-size:16px;font-weight:700" id="stNodes">-</div>
+          <div style="color:#5a5a7a">节点</div>
+        </div>
+        <div style="background:#111122;padding:6px;border-radius:4px;text-align:center">
+          <div style="color:#7c3aed;font-size:16px;font-weight:700" id="stEdges">-</div>
+          <div style="color:#5a5a7a">边</div>
+        </div>
+        <div style="background:#111122;padding:6px;border-radius:4px;text-align:center">
+          <div style="color:#f59e0b;font-size:16px;font-weight:700" id="stSys">3</div>
+          <div style="color:#5a5a7a">系统</div>
+        </div>
+        <div style="background:#111122;padding:6px;border-radius:4px;text-align:center">
+          <div style="color:#ff6b6b;font-size:16px;font-weight:700" id="stFPS">-</div>
+          <div style="color:#5a5a7a">FPS</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <h3>🎨 节点类型</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;font-size:9px">
+        <span><span style="display:inline-block;width:10px;height:10px;background:#7c3aed;border-radius:2px;vertical-align:middle"></span> func</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#a78bfa;border-radius:2px;vertical-align:middle"></span> method</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;vertical-align:middle"></span> class</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#00d4aa;border-radius:2px;vertical-align:middle"></span> var</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#6b7280;border-radius:2px;vertical-align:middle"></span> import</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#4b5563;border-radius:2px;vertical-align:middle"></span> file</span>
+      </div>
+    </div>
+    <div class="sec">
+      <h3>⚙️</h3>
+      <label style="display:flex;justify-content:space-between;font-size:9px;color:#5a5a7a">
+        <span>节点</span><span id="szVal">3px</span>
+      </label>
+      <input type="range" min="1" max="10" value="3" oninput="updateSize(this.value)" style="width:100%;accent-color:#00d4aa">
+      <label style="display:flex;justify-content:space-between;font-size:9px;color:#5a5a7a;margin-top:4px">
+        <span>边</span><span id="opVal">0.1</span>
+      </label>
+      <input type="range" min="1" max="100" value="10" oninput="updateEdgeOp(this.value)" style="width:100%;accent-color:#7c3aed">
+    </div>
+    <div id="detail">
+      <h2 id="detName"></h2>
+      <div class="kind" id="detKind"></div>
+      <div id="detProps"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+  Small systems load synchronously via script tags.
+  fungal-cortex (53MB) loads async via a second pass.
+  G6 loads from jsdelivr CDN.
+  ZERO fetch() calls — all data via <script> tags.
+  ═══════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@antv/g6@5/dist/g6.min.js"></script>
+<script src="data/stats.js"></script>
+<script src="data/sclerotium-os.js"></script>
+<script src="data/mirofish.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════
+// Phase 1: Render small systems immediately
+// ═══════════════════════════════════════════════
+const KIND_COLORS = {
+  function:'#7c3aed',method:'#a78bfa',class:'#f59e0b',
+  interface:'#fbbf24',variable:'#00d4aa',constant:'#34d399',
+  import:'#6b7280',file:'#4b5563',route:'#ff6b6b',
+};
+const EDGE_COLORS = {
+  calls:'#7c3aed33',contains:'#f59e0b33',imports:'#6b728033',
+  instantiates:'#00d4aa33',references:'#ff6b6b33',extends:'#ec489933',
+};
+
+let allNodes=[],allEdges=[],nodeMap={},graph=null,currentSys='all',nodeSize=3,edgeOpacity=0.1;
+let fpsCount=0,fpsLast=0,fpsCur=0;
+
+function mergeDataset(ds){
+  if(!ds||!ds.ids)return 0;
+  let added=0;
+  for(let i=0;i<ds.count;i++){
+    const id=ds.ids[i];
+    if(nodeMap[id])continue;
+    nodeMap[id]=true;
+    allNodes.push({id,label:ds.labels[i],kind:ds.kinds[i],file:ds.files[i],line:ds.lines[i],color:ds.colors[i],system:ds.system});
+    added++;
+  }
+  for(let i=0;i<ds.edgeCount;i++){
+    allEdges.push({source:ds.edgeSources[i],target:ds.edgeTargets[i],kind:ds.edgeKinds[i]});
+  }
+  return added;
+}
+
+// Merge small systems
+const ds1 = window._graphData_sclerotium_os;
+const ds2 = window._graphData_mirofish;
+const n1 = mergeDataset(ds1);
+const n2 = mergeDataset(ds2);
+document.getElementById('loadBar').style.width='15%';
+document.getElementById('loadMsg').textContent =
+  `已加载: ${allNodes.length.toLocaleString()} 节点 (Sclerotium+MiroFish). 正在加载 Fungal Cortex...`;
+
+// ═══════════════════════════════════════════════
+// G6 Graph
+// ═══════════════════════════════════════════════
+function initGraph(){
+  const c=document.getElementById('canvas');
+  graph=new G6.Graph({
+    container:'canvas',width:c.clientWidth,height:c.clientHeight,
+    renderer:'webgl',animation:true,autoFit:'view',padding:[30,30,30,30],
+    layout:{type:'force2',preventOverlap:false,nodeSpacing:6,linkDistance:50,animated:true,maxIteration:300,alphaDecay:0.02,alphaMin:0.001,velocityDecay:0.4},
+    node:{type:'circle',style:{size:nodeSize,fill:d=>d.data?.color||'#666',stroke:'#0a0a0f',lineWidth:0.2,opacity:0.85},
+      state:{active:{size:10,stroke:'#fff',lineWidth:2,zIndex:100},selected:{size:12,stroke:'#00d4aa',lineWidth:3,zIndex:101},inactive:{opacity:0.04},highlighted:{opacity:1,size:6,stroke:'#ff8c00',lineWidth:1.5}}},
+    edge:{type:'line',style:{stroke:d=>EDGE_COLORS[d.data?.kind]||'#33333322',lineWidth:0.2,opacity:edgeOpacity,endArrow:false},
+      state:{active:{stroke:'#888',lineWidth:1,opacity:0.7},inactive:{opacity:0.005},highlighted:{stroke:'#ff8c00',lineWidth:0.8,opacity:0.6}}},
+    behaviors:['zoom-canvas','drag-canvas','drag-element',{type:'hover-activate',degree:1,direction:'both'}],
+    optimizer:{enable:true,strategies:['simplify','hideShapes','thresholds']},
+    animationBuffer:true,animationCulling:true,
+    plugins:[{type:'minimap',key:'minimap',size:[160,110],className:'minimap',viewportStyle:{stroke:'#00d4aa',lineWidth:1.5}}],
+  });
+  graph.on('node:click',evt=>{const n=allNodes.find(x=>x.id===evt.target?.id);if(n)showDetail(n);});
+  graph.on('canvas:click',()=>document.getElementById('detail').classList.remove('show'));
+  graph.on('afterrender',()=>{fpsCount++;const n=performance.now();if(n-fpsLast>=1000){fpsCur=Math.round(fpsCount/((n-fpsLast)/1000));fpsCount=0;fpsLast=n;updateStats();}});
+  window.addEventListener('resize',()=>{const c=document.getElementById('canvas');graph.setSize(c.clientWidth,c.clientHeight);});
+}
+
+function renderGraph(nodes,edges){
+  if(!graph)initGraph();
+  const gNodes=nodes.map(n=>({id:n.id,data:{...n},style:{fill:n.color||KIND_COLORS[n.kind]||'#666',size:nodeSize}}));
+  const gEdges=edges.map((e,i)=>({id:'e'+i,source:e.source,target:e.target,data:{kind:e.kind},style:{stroke:EDGE_COLORS[e.kind]||'#33333322',opacity:edgeOpacity}}));
+  graph.setData({nodes:gNodes,edges:gEdges});
+  graph.render();
+  setTimeout(()=>graph.layout(),50);
+  updateStats();
+  document.getElementById('loading').classList.add('hidden');
+}
+
+// ═══════════════════════════════════════════════
+// Filter / Search / Controls
+// ═══════════════════════════════════════════════
+function filterSys(sys,btn){
+  currentSys=sys;
+  document.querySelectorAll('[data-sys]').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  let nodes=allNodes,edges=allEdges;
+  if(sys!=='all'){nodes=nodes.filter(n=>n.system===sys);const ids=new Set(nodes.map(n=>n.id));edges=edges.filter(e=>ids.has(e.source)&&ids.has(e.target));}
+  renderGraph(nodes,edges);
+  toast(`已过滤: ${nodes.length.toLocaleString()} 节点`);
+}
+
+function doSearch(q){
+  if(!graph)return;
+  graph.setElementState({},'highlighted');graph.setElementState({},'inactive');
+  if(!q||q.length<2)return;
+  const ql=q.toLowerCase(),matched=new Set();
+  allNodes.forEach(n=>{if((n.label||'').toLowerCase().includes(ql)||(n.file||'').toLowerCase().includes(ql)||(n.id||'').toLowerCase().includes(ql))matched.add(n.id);});
+  if(!matched.size){toast('未找到');return;}
+  const state={};allNodes.forEach(n=>{state[n.id]=matched.has(n.id)?'highlighted':'inactive';});
+  graph.setElementState(state);
+  graph.focusElement([...matched][0],{duration:400});
+  toast(`找到 ${matched.size} 个`);
+}
+
+function relayout(){toast('重新布局...');graph.layout();}
+function updateSize(v){nodeSize=parseInt(v);document.getElementById('szVal').textContent=v+'px';if(!graph)return;const d=graph.getData();if(d.nodes)d.nodes.forEach(n=>n.style.size=nodeSize);graph.setData(d);graph.draw();}
+function updateEdgeOp(v){edgeOpacity=parseInt(v)/100;document.getElementById('opVal').textContent=edgeOpacity.toFixed(2);if(!graph)return;const d=graph.getData();if(d.edges)d.edges.forEach(e=>e.style.opacity=edgeOpacity);graph.setData(d);graph.draw();}
+
+function showDetail(n){
+  const p=document.getElementById('detail');p.classList.add('show');
+  document.getElementById('detName').textContent=n.label||n.id;
+  const k=document.getElementById('detKind');k.textContent=n.kind||'?';
+  k.style.background=(KIND_COLORS[n.kind]||'#666')+'33';k.style.color=KIND_COLORS[n.kind]||'#666';k.style.border='1px solid '+(KIND_COLORS[n.kind]||'#666');
+  document.getElementById('detProps').innerHTML=[['系统',n.system],['文件',n.file],['行号',n.line],['ID',n.id]].map(([k,v])=>`<div class="row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+}
+
+function updateStats(){
+  if(!graph)return;
+  const d=graph.getData(),nc=(d.nodes||[]).length,ec=(d.edges||[]).length;
+  document.getElementById('statBar').textContent=`${nc.toLocaleString()} 节点 | ${ec.toLocaleString()} 边 | ${fpsCur} FPS`;
+  document.getElementById('stNodes').textContent=nc>1000?(nc/1000).toFixed(1)+'K':nc;
+  document.getElementById('stEdges').textContent=ec>1000?(ec/1000).toFixed(1)+'K':ec;
+  document.getElementById('stFPS').textContent=fpsCur||'-';
+}
+
+function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2000);}
+</script>
+
+<!-- ═══════════════════════════════════════════════
+  Phase 2: Load large fungal-cortex.js asynchronously
+  Uses dynamic <script> tag — not fetch()
+  ═══════════════════════════════════════════════ -->
+<script>
+(function(){
+  const s=document.createElement('script');
+  s.src='data/fungal-cortex.js';
+  s.onload=function(){
+    document.getElementById('loadBar').style.width='50%';
+    document.getElementById('loadMsg').textContent='正在合并 Fungal Cortex 数据...';
+    setTimeout(function(){
+      const ds=window._graphData_fungal_cortex;
+      const added=mergeDataset(ds);
+      document.getElementById('loadBar').style.width='80%';
+      document.getElementById('loadMsg').textContent=
+        `已加载全部: ${allNodes.length.toLocaleString()} 节点, ${allEdges.length.toLocaleString()} 边. 正在渲染...`;
+      setTimeout(function(){
+        renderGraph(allNodes,allEdges);
+      },100);
+    },50);
+  };
+  s.onerror=function(){
+    document.getElementById('loadMsg').innerHTML=
+      '❌ 无法加载 fungal-cortex.js<br><small>请确认: 1) python -m http.server 8899 正在运行<br>2) 浏览器访问 http://localhost:8899<br>3) 不要直接打开文件</small>';
+    document.getElementById('loadBar').style.background='#ff4444';
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

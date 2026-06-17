@@ -1,0 +1,75 @@
+# =============================================================
+# Stage 1: Base (system dependencies)
+# =============================================================
+FROM python:3.12-slim AS base
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        g++ \
+        libffi-dev \
+        curl \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# =============================================================
+# Stage 2: Dependencies
+# =============================================================
+FROM base AS deps
+
+WORKDIR /app
+
+COPY pyproject.toml ./
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        pydantic>=2.0 \
+        pyyaml>=6.0 \
+        numpy>=1.26 \
+        scipy>=1.12 \
+        networkx>=3.2 \
+        chromadb>=0.4 \
+        fastapi>=0.109 \
+        websockets>=12.0 \
+        docker>=7.0 \
+        prometheus-client>=0.19
+
+# =============================================================
+# Stage 3: Runner
+# =============================================================
+FROM python:3.12-slim AS runner
+
+WORKDIR /app
+
+# Install runtime system dependencies only
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN addgroup --system --gid 1001 appgroup && \
+    adduser --system --uid 1001 appuser
+
+# Copy installed Python packages from deps stage
+COPY --from=deps /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=deps /usr/local/bin /usr/local/bin
+
+# Copy application source
+COPY --chown=appuser:appgroup src/ ./src/
+
+# Ensure Python path includes our app
+ENV PYTHONPATH=/app/src
+
+# Switch to non-root user
+USER appuser
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl --fail http://localhost:8000/api/health || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,91 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "22"
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # ── Frontend image ────────────────────────────────────────────
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./docker/Dockerfile.frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY }}/cortex-frontend:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/cortex-frontend:latest
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
+
+      # ── Backend image ─────────────────────────────────────────────
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ../
+          file: ./docker/Dockerfile.backend
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY }}/cortex-backend:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/cortex-backend:latest
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+
+      # ── Deploy via kubeconfig ─────────────────────────────────────
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/cortex-frontend \
+            cortex-frontend=${{ secrets.DOCKER_REGISTRY }}/cortex-frontend:${{ github.sha }} \
+            -n ${{ secrets.K8S_NAMESPACE }} --record
+
+          kubectl set image deployment/cortex-backend \
+            cortex-backend=${{ secrets.DOCKER_REGISTRY }}/cortex-backend:${{ github.sha }} \
+            -n ${{ secrets.K8S_NAMESPACE }} --record
+
+          kubectl rollout status deployment/cortex-frontend \
+            -n ${{ secrets.K8S_NAMESPACE }} --timeout=300s
+
+          kubectl rollout status deployment/cortex-backend \
+            -n ${{ secrets.K8S_NAMESPACE }} --timeout=300s
+
+      - name: Deployment Status
+        run: |
+          echo "Deployment complete:"
+          echo "  Frontend: ${{ secrets.DOCKER_REGISTRY }}/cortex-frontend:${{ github.sha }}"
+          echo "  Backend:  ${{ secrets.DOCKER_REGISTRY }}/cortex-backend:${{ github.sha }}"
+          echo "  Namespace: ${{ secrets.K8S_NAMESPACE }}"

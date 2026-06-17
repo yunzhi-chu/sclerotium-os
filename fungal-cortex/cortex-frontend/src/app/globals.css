@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cortex-bg: #0a0a0f;
+  --color-cortex-surface: #141428;
+  --color-cortex-border: #1e1e3a;
+  --color-cortex-primary: #00d4aa;
+  --color-cortex-secondary: #7c3aed;
+  --color-cortex-accent: #f59e0b;
+  --color-cortex-danger: #ef4444;
+  --color-cortex-warning: #f59e0b;
+  --color-cortex-success: #22c55e;
+  --color-cortex-info: #3b82f6;
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  --font-sans: "Inter", "system-ui", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: #0a0a0f;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #141428;
+}
+::-webkit-scrollbar-thumb {
+  background: #2d2d5a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3d3d7a;
+}
+
+/* Canvas background */
+.canvas-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Neon glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.1), inset 0 0 20px rgba(0, 212, 170, 0.05);
+}
+.glow-danger {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1), inset 0 0 20px rgba(239, 68, 68, 0.05);
+}
+
+/* Agent network animation */
+@keyframes edge-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+.edge-pulse {
+  animation: edge-pulse 2s ease-in-out infinite;
+}
