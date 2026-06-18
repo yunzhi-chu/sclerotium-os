@@ -11,9 +11,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-_MIROFISH = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main/backend")
-if str(_MIROFISH) not in sys.path:
-    sys.path.insert(0, str(_MIROFISH))
+from kernel.project_paths import add_subsystem_paths
+
+add_subsystem_paths()
 
 
 def _ensure_packages() -> None:

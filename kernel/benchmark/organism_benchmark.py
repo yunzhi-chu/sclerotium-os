@@ -10,13 +10,14 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 from kernel.benchmark.engine import BenchmarkResult, BenchmarkStatus
+from kernel.project_paths import add_subsystem_paths, FUNGAL_CORTEX, FUNGAL_CORTEX_SRC, MIROFISH
 
-os.environ["DEEPSEEK_API_KEY"] = "sk-9a10241fc127458f8d552c0a3f88b1f7"
+add_subsystem_paths()
 
 _SCL = Path(".")
-_FR  = Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex")
-_FRS = _FR / "src"
-_MF  = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main/backend")
+_FR  = FUNGAL_CORTEX
+_FRS = FUNGAL_CORTEX_SRC
+_MF  = MIROFISH
 for p in [str(_FR), str(_FRS), str(_MF)]:
     if p not in sys.path: sys.path.insert(0, p)
 

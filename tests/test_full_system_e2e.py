@@ -1,9 +1,6 @@
 """Full system end-to-end test: 6 categories, all 3 systems."""
 import asyncio, json, os, random, sys, time
 sys.path.insert(0, ".")
-os.environ["SCLEROTIUM_API_KEY"] = "sk-9a10241fc127458f8d552c0a3f88b1f7"
-
-
 async def main():
     from mcp.server import SclerotiumMCPServer
     from agent.llm_client import LLMClient, ToolCall

@@ -31,16 +31,9 @@ from pathlib import Path
 from typing import Any
 
 from kernel.benchmark.engine import BenchmarkResult, BenchmarkStatus
+from kernel.project_paths import add_subsystem_paths
 
-# Paths
-_SCLEROTIUM = Path("C:/Users/34442/Desktop/porject/Quantitative model/sclerotium-os")
-_FUNGAL_ROOT = Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex")
-_FUNGAL = _FUNGAL_ROOT / "src"
-_MIROFISH = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main/backend")
-
-for p in [str(_FUNGAL_ROOT), str(_FUNGAL), str(_MIROFISH)]:
-    if p not in sys.path:
-        sys.path.insert(0, p)
+add_subsystem_paths()
 
 
 class TrinityBenchmark:

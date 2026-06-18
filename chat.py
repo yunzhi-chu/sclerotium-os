@@ -13,6 +13,7 @@ from kernel.event_bus import EventBus
 from kernel.constitutional_arbiter import ConstitutionalArbiter, ActionRequest
 from kernel.hexis_memory import HexisMemoryStore, MemoryLevel
 from evolution.fcpi_tracker import FCPITracker
+from kernel.security import validate_command
 
 bus = EventBus()
 arbiter = ConstitutionalArbiter()
@@ -75,6 +76,11 @@ def execute_shell(command):
 
     # 发布事件
     bus.publish("ai.command", {"command": command}, source="terminal")
+
+    # 安全校验
+    check = validate_command(command)
+    if not check["pass"]:
+        return f"[安全阻止] {check['reason']}"
 
     # 执行
     start = time.time()

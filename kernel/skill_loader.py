@@ -1,20 +1,23 @@
 """Dynamic Skill Loader — auto-discover all local skills. No hardcoding.
 
 Scans:
-  1. fungal-cortex/skills/ (6000+ SKILL.md)
+  1. fungal-cortex/skills/ (installed skills)
   2. ~/.claude/skills/ (locally installed)
   3. ./skills/ (project-local)
-  4. All awesome-* subdirs under fungal-cortex
 
-No path hardcoding. No category hardcoding. No max limit.
+Lazy-load: 技能不存在时自动从 manifest 安装（git clone 或 submodule）。
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import os
+import subprocess
 from pathlib import Path
 from typing import Any
+
+from kernel.project_paths import FUNGAL_CORTEX
 
 logger = logging.getLogger("sclerotium.skills")
 
@@ -67,6 +70,7 @@ class SkillLoader:
         self._search_paths = search_paths or self._auto_discover_paths()
         self._skills: dict[str, LoadedSkill] = {}
         self._total_tokens = 0
+        self._manifest: dict[str, Any] | None = None
 
     @staticmethod
     def _auto_discover_paths() -> list[str]:
@@ -87,10 +91,9 @@ class SkillLoader:
                 break
             current = current.parent
 
-        # Fallback: use known base path
+        # Fallback: use fungal-cortex/skills
         if not paths:
-            base = "C:/Users/34442/Desktop/porject/Quantitative model"
-            fc = os.path.join(base, "fungal-cortex", "skills")
+            fc = str(FUNGAL_CORTEX / "skills")
             if os.path.exists(fc):
                 paths.append(fc)
 
@@ -201,7 +204,104 @@ class SkillLoader:
         return "\n".join(lines)
 
     def get_skill(self, name: str) -> LoadedSkill | None:
-        return self._skills.get(name)
+        """获取技能，不存在时自动尝试按需加载。"""
+        sk = self._skills.get(name)
+        if sk:
+            return sk
+        return self._lazy_load_skill(name)
+
+    # ── 按需加载（manifest + git clone / submodule） ────────────
+
+    def _load_manifest(self) -> dict[str, Any] | None:
+        if self._manifest is not None:
+            return self._manifest
+        manifest_path = FUNGAL_CORTEX / "skills" / "skill_manifest.json"
+        if not manifest_path.exists():
+            self._manifest = {}
+            return self._manifest
+        try:
+            self._manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            return self._manifest
+        except Exception:
+            self._manifest = {}
+            return self._manifest
+
+    def _lazy_load_skill(self, name: str) -> LoadedSkill | None:
+        """按技能名查找 manifest 并尝试安装。"""
+        manifest = self._load_manifest()
+        if not manifest:
+            return None
+
+        skills = manifest.get("skills", {})
+        # 尝试精确匹配
+        info = skills.get(name)
+        if not info:
+            # 尝试模糊匹配（去掉 -main 后缀等）
+            for key, val in skills.items():
+                if val.get("dir", "").startswith(name) or key == name:
+                    info = val
+                    break
+        if not info:
+            return None
+
+        target_dir = FUNGAL_CORTEX / "skills" / info["dir"]
+        if target_dir.exists():
+            # 已安装，重新扫描
+            self._scan_single(target_dir)
+            return self._skills.get(name)
+
+        print(f"[技能] 按需加载: {name} ({info.get('description', '')})")
+        repo_url = info.get("url", "")
+
+        # 优先 submodule
+        root = FUNGAL_CORTEX.parent
+        sub_path = f"fungal-cortex/skills/{info['dir']}"
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(root), "submodule", "update", "--init", "--depth", "1", sub_path],
+                capture_output=True, text=True, timeout=30,
+            )
+            if result.returncode == 0:
+                print(f"  [✓] 通过 submodule 安装: {name}")
+                self._scan_single(target_dir)
+                return self._skills.get(name)
+        except Exception:
+            pass
+
+        # fallback: git clone 到本地
+        if repo_url:
+            try:
+                result = subprocess.run(
+                    ["git", "clone", "--depth", "1", repo_url, str(target_dir)],
+                    capture_output=True, text=True, timeout=120,
+                )
+                if result.returncode == 0:
+                    print(f"  [✓] 已克隆: {name}")
+                    self._scan_single(target_dir)
+                    return self._skills.get(name)
+                print(f"  [✗] 克隆失败: {result.stderr[:200]}")
+            except Exception as e:
+                print(f"  [✗] {e}")
+
+        print(f"  [!] 未安装可用: {name}。运行: scripts/install_skill.ps1 -Name {name}")
+        return None
+
+    def _scan_single(self, skill_dir: Path) -> None:
+        """扫描单个技能目录并注册找到的 SKILL.md。"""
+        if not skill_dir.exists():
+            return
+        for sf in skill_dir.rglob("SKILL.md"):
+            try:
+                with open(sf, encoding="utf-8", errors="replace") as f:
+                    head = f.read(2048)
+                sname = sf.parent.name
+                desc = SkillLoader._extract_description(head)
+                self._skills[sname] = LoadedSkill(
+                    name=sname, path=str(sf), description=desc,
+                    content=head, token_estimate=len(head) // 4,
+                )
+            except Exception:
+                continue
 
     @property
     def skill_count(self) -> int:

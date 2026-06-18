@@ -15,9 +15,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
-_FUNGAL_CORTEX = Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex")
-if str(_FUNGAL_CORTEX) not in sys.path:
-    sys.path.insert(0, str(_FUNGAL_CORTEX))
+from kernel.project_paths import add_subsystem_paths
+
+add_subsystem_paths()
 
 
 class OrganStatus:

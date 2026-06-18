@@ -25,7 +25,9 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
+
+from kernel.project_paths import SKILLS_DIR, Callable
 
 
 @dataclass
@@ -156,7 +158,7 @@ class CommandRegistry:
         else:
             # Default search paths
             candidates = [
-                Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex/skills"),
+                SKILLS_DIR,
                 Path("./skills"),
                 Path.home() / ".sclerotium" / "skills",
             ]

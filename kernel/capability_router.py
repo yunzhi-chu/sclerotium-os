@@ -35,6 +35,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from kernel.project_paths import SKILLS_DIR
+
 
 @dataclass
 class Capability:
@@ -207,7 +209,7 @@ class CapabilityRouter:
             Path.home() / ".claude" / "skills",
             Path("./skills"),
             Path("./.claude/skills"),
-            Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex/skills"),
+            SKILLS_DIR,
         ]
 
         for base in search_paths:

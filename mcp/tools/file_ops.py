@@ -3,9 +3,15 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from kernel.security import check_path_safe
+
+
 def file_read(file_path: str, start_line: int = 0, end_line: int = 0) -> dict[str, Any]:
     """Read a file. Claude Code FileReadTool equivalent."""
-    p = Path(file_path)
+    check = check_path_safe(file_path)
+    if not check["pass"]:
+        return {"status": "error", "error": check["error"]}
+    p = check["resolved"]
     if not p.exists():
         return {"status": "error", "error": f"File not found: {file_path}"}
     try:
@@ -22,13 +28,11 @@ def file_read(file_path: str, start_line: int = 0, end_line: int = 0) -> dict[st
         return {"status": "error", "error": str(e)[:200]}
 
 def file_write(file_path: str, content: str, mode: str = "w") -> dict[str, Any]:
-    """Write content to a file. Creates parent directories automatically.
-
-    ⚠️ If the file ALREADY EXISTS, use file_edit instead. file_write replaces the ENTIRE file
-    which can break imports, tests, and other code that depends on the old interface.
-    Only use file_write on an existing file if you are doing a deliberate full restructure.
-    """
-    p = Path(file_path)
+    """Write content to a file. Creates parent directories automatically."""
+    check = check_path_safe(file_path, write=True)
+    if not check["pass"]:
+        return {"status": "error", "error": check["error"]}
+    p = check["resolved"]
     try:
         p.parent.mkdir(parents=True, exist_ok=True)
         existed = p.exists()
@@ -69,12 +73,11 @@ def file_write(file_path: str, content: str, mode: str = "w") -> dict[str, Any]:
 
 def file_edit(file_path: str, old_string: str, new_string: str,
               replace_all: bool = False) -> dict[str, Any]:
-    """Replace text in a file. Claude Code EditTool equivalent.
-
-    Tries exact match first, then falls back to fuzzy match (ignoring leading/trailing whitespace).
-    Returns line-level context on failure to help the LLM fix old_string.
-    """
-    p = Path(file_path)
+    """Replace text in a file."""
+    check = check_path_safe(file_path)
+    if not check["pass"]:
+        return {"status": "error", "error": check["error"]}
+    p = check["resolved"]
     if not p.exists():
         return {"status": "error", "error": f"File not found: {file_path}"}
     try:
@@ -138,6 +141,10 @@ def file_list(directory: str = ".", pattern: str = "*", max_results: int = 50) -
     except (TypeError, ValueError):
         max_results = 50
     d = Path(directory)
+    check = check_path_safe(directory)
+    if not check["pass"]:
+        return {"status": "error", "error": check["error"]}
+    d = check["resolved"]
     if not d.exists():
         return {"status": "error", "error": f"Directory not found: {directory}"}
     try:

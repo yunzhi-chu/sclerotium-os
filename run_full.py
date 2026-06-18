@@ -14,8 +14,8 @@ import os, sys, subprocess, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-FUNGAL = Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex")
-MIROFISH = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main/backend")
+FUNGAL = ROOT / "fungal-cortex"
+MIROFISH = ROOT / "MiroFish-main" / "backend"
 
 def check_organ(path: Path, name: str) -> bool:
     if path.exists():

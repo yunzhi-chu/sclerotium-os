@@ -244,6 +244,10 @@ def _fallback_tool_call(tool_name: str, args: dict) -> str:
         cmd = args.get("command", args.get("cmd", ""))
         if not cmd:
             return "Error: no command"
+        from kernel.security import validate_command
+        check = validate_command(cmd)
+        if not check["pass"]:
+            return f"[安全阻止] {check['reason']}"
         try:
             import subprocess
             r = subprocess.run(cmd, shell=True, timeout=300,

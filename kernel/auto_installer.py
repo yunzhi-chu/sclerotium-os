@@ -8,6 +8,8 @@ import logging, os, re, subprocess, tempfile, urllib.request
 from pathlib import Path
 from typing import Any
 
+from kernel.project_paths import FUNGAL_CORTEX
+
 logger = logging.getLogger("sclerotium.auto_installer")
 
 
@@ -15,8 +17,7 @@ def discover_paths() -> dict[str, str]:
     """Auto-discover target directories."""
     paths = {}
     for key, env_var, fallback in [
-        ("skills_fungal", None,
-         "C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex/skills"),
+        ("skills_fungal", None, str(FUNGAL_CORTEX / "skills")),
         ("skills_local", None, os.path.expanduser("~/.claude/skills")),
         ("mcp_servers", None, os.path.expanduser("~/.sclerotium/mcp")),
         ("desktop", None, os.path.expanduser("~/Desktop")),

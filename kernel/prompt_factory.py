@@ -24,56 +24,10 @@ from __future__ import annotations
 import platform
 import os
 import time
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-
-# ═══════════════════════════════════════════════════════════════
-# 模型特定提示词模板（对标 OpenCode system.ts provider()）
-# ═══════════════════════════════════════════════════════════════
-
-MODEL_PROMPTS: dict[str, str] = {
-    # DeepSeek: 需要更明确的指令，更强的停止信号
-    "deepseek": """
-## Model-Specific Instructions (DeepSeek)
-
-You are running on DeepSeek. This model separates narration from action more than Claude does.
-CRITICAL RULES for DeepSeek:
-- ALWAYS output a tool call JSON in the SAME message as your narration. Never say "I'll do X" without the JSON.
-- After file_write returns ok: move to the NEXT file. Do NOT file_read the file you just wrote.
-- After all files created: run tests ONCE. If they pass, output ONLY a text summary (no tools).
-- If tests fail: fix the EXACT failure only. Do NOT recreate files that already exist.
-- Do NOT output <function_calls> or <invoke> XML — these formats WILL be silently ignored.
-""",
-
-    # Anthropic/Claude: 可以用更宽松的隐式完成
-    "anthropic": """
-## Model-Specific Instructions (Claude)
-
-You are running on Claude. You naturally fuse narration and action in one message.
-- Use implicit finish: text-only response = task complete.
-- Prefer parallel tool calls for independent operations.
-""",
-
-    # OpenAI/GPT: 强调执行效率
-    "openai": """
-## Model-Specific Instructions (OpenAI)
-
-You are running on OpenAI. Be direct and efficient.
-- Lead with the tool call, follow with brief explanation.
-- One message = one action + one explanation. Do not chain narratives.
-""",
-
-    # 默认/通用
-    "default": """
-## Model-Specific Instructions
-
-- Fuse narration and action in ONE message. Never announce without executing.
-- After file_write: move to next file immediately.
-- After tests pass: STOP. Text summary only.
-""",
-}
+from kernel.prompt_models import PromptContext, get_model_prompt
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -158,25 +112,6 @@ CRITICAL: The "content" string in file_write IS the file. Do NOT put code outsid
 # Prompt Factory
 # ═══════════════════════════════════════════════════════════════
 
-@dataclass
-class PromptContext:
-    """Context for prompt assembly."""
-    user_prompt: str = ""
-    provider: str = "deepseek"
-    model: str = ""
-    working_dir: str = "."
-    project_root: str = "."
-    turn_number: int = 0
-    task_context: str = ""        # 规格书等关键内容
-    files_created: set = field(default_factory=set)
-    files_read: set = field(default_factory=set)
-    tool_results: str = ""        # 当前轮的工具结果
-    scene: str = ""               # 场景指令
-    is_first_turn: bool = True
-    is_completion_warning: bool = False
-    pytest_passed: int = 0
-    pytest_failed: int = 0
-
 
 class PromptFactory:
     """Assembles prompts using 4-framework best practices."""
@@ -204,14 +139,7 @@ class PromptFactory:
 
     def get_model_specific_prompt(self, provider: str) -> str:
         """Select model-specific instructions based on provider."""
-        provider_lower = provider.lower() if provider else ""
-        if "deepseek" in provider_lower:
-            return MODEL_PROMPTS["deepseek"]
-        if any(k in provider_lower for k in ("claude", "anthropic")):
-            return MODEL_PROMPTS["anthropic"]
-        if any(k in provider_lower for k in ("openai", "gpt")):
-            return MODEL_PROMPTS["openai"]
-        return MODEL_PROMPTS["default"]
+        return get_model_prompt(provider)
 
     # ── 环境上下文（对标 OpenCode environment()）──
 

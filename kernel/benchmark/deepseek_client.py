@@ -1,17 +1,10 @@
-"""DeepSeek API Client — LLM driver for Sclerotium OS benchmarks.
-
-Connects to DeepSeek API for real LLM-driven evaluation tasks.
-Uses deepseek-v4-pro for maximum coding capability.
-
-API: DeepSeek OpenAI-compatible endpoint
-Key: sk-9a10241fc127458f8d552c0a3f88b1f7
-Model: deepseek-v4-pro (latest and most capable)
-"""
+"""DeepSeek API Client — LLM driver for Sclerotium OS benchmarks."""
 
 from __future__ import annotations
 
 import asyncio
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from typing import Any
@@ -41,15 +34,17 @@ class DeepSeekClient:
     """
 
     BASE_URL = "https://api.deepseek.com/v1"
-    API_KEY = "sk-9a10241fc127458f8d552c0a3f88b1f7"
     MODEL = "deepseek-v4-pro"
 
     def __init__(self, model: str | None = None) -> None:
+        self._api_key = os.environ.get("DEEPSEEK_API_KEY")
+        if not self._api_key:
+            raise ValueError("DEEPSEEK_API_KEY environment variable not set")
         self._model = model or self.MODEL
         self._client = httpx.AsyncClient(
             base_url=self.BASE_URL,
             headers={
-                "Authorization": f"Bearer {self.API_KEY}",
+                "Authorization": f"Bearer {self._api_key}",
                 "Content-Type": "application/json",
             },
             timeout=httpx.Timeout(120.0),

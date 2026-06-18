@@ -50,8 +50,8 @@ async def main():
 
     # Paths
     scl = Path(".")
-    fungal = Path("C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex/src")
-    mirofish = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main/backend")
+    fungal = Path(".") / "fungal-cortex" / "src"
+    mirofish = Path(".") / "MiroFish-main" / "backend"
 
     scl_py = count_py(scl)
     fungal_py = count_py(fungal)

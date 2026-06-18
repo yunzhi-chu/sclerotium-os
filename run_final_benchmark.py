@@ -2,8 +2,6 @@
 import asyncio, os, random, sys, time
 from pathlib import Path
 
-os.environ["DEEPSEEK_API_KEY"] = "sk-9a10241fc127458f8d552c0a3f88b1f7"
-
 async def main():
     print()
     print("=" * 72)

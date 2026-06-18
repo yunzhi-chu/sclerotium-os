@@ -1,8 +1,0 @@
-{
-  "id": "team-projects",
-  "configSchema": {
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {}
-  }
-}

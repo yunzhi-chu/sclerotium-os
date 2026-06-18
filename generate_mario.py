@@ -2,7 +2,6 @@
 import asyncio, os, sys, time, json, urllib.request, traceback
 from pathlib import Path
 
-os.environ["DEEPSEEK_API_KEY"] = "sk-9a10241fc127458f8d552c0a3f88b1f7"
 API_KEY = os.environ["DEEPSEEK_API_KEY"]
 
 async def main():

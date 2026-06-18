@@ -24,6 +24,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from kernel.project_paths import AGENTS_DIR
+
 logger = logging.getLogger("sclerotium.agent_profiles")
 
 
@@ -161,6 +163,8 @@ BUILTIN_PROFILES: dict[str, AgentProfile] = {
 }
 
 
+
+
 class AgentProfileManager:
     """Manages agent profiles — load, switch, list.
 
@@ -176,7 +180,7 @@ class AgentProfileManager:
     """
 
     SEARCH_PATHS = [
-        "C:/Users/34442/Desktop/porject/Quantitative model/fungal-cortex/agents",
+        str(AGENTS_DIR),
         "./profiles",
         "~/.sclerotium/profiles",
     ]
