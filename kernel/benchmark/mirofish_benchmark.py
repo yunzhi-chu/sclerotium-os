@@ -29,11 +29,9 @@ from types import ModuleType
 from typing import Any
 
 from kernel.benchmark.engine import BenchmarkResult, BenchmarkStatus
+from kernel.project_paths import add_subsystem_paths
 
-_MIROFISH_ROOT = Path("C:/Users/34442/Desktop/porject/Quantitative model/MiroFish-main")
-_MIROFISH = _MIROFISH_ROOT / "backend"
-if str(_MIROFISH) not in sys.path:
-    sys.path.insert(0, str(_MIROFISH))
+add_subsystem_paths()
 
 
 def _ensure_packages() -> None:

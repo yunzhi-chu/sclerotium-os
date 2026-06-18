@@ -66,7 +66,8 @@ from cli.tui.widgets.task_tracker import TaskTracker
 from kernel.command_registry import CommandRegistry, Command
 from kernel.capability_router import CapabilityRouter
 from kernel.organ_symphony import OrganSymphony, OrganLayer
-from kernel.prompt_factory import PromptFactory, PromptContext, ToolCallRepairPipeline
+from kernel.prompt_factory import PromptFactory, ToolCallRepairPipeline
+from kernel.prompt_models import PromptContext
 
 # ── Smart Message Renderer ────────────────────────────────────────────
 

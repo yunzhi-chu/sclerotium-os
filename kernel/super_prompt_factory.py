@@ -24,32 +24,9 @@ Sclerotium ADVANTAGE over Claude Code:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from enum import Enum
 from typing import Any
 
-
-class TaskDomain(Enum):
-    """Task classification for prompt adaptation."""
-    CODE_GENERATION = "code_gen"
-    CODE_REVIEW = "code_review"
-    REFACTORING = "refactor"
-    DEBUGGING = "debug"
-    ARCHITECTURE = "architecture"
-    TESTING = "testing"
-    DEVOPS = "devops"
-    DATA_SCIENCE = "data_science"
-    GENERAL = "general"
-
-
-@dataclass
-class PromptAssembly:
-    """The assembled super prompt with metadata."""
-    full_prompt: str
-    dimensions_used: list[str] = field(default_factory=list)
-    token_count: int = 0
-    task_domain: str = "general"
-    cache_zone_breakpoints: list[int] = field(default_factory=list)
+from kernel.prompt_models import TaskDomain, PromptAssembly
 
 
 class SuperPromptFactory:

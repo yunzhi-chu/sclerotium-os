@@ -1,4 +1,0 @@
-# Python dependencies for ima-tts-ai skill
-# Install with: pip install -r requirements.txt
-
-requests>=2.25.0

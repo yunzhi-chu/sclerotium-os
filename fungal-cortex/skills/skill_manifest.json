@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "description": "Sclerotium Trinity 外部技能仓库注册表 — 按需加载",
+  "note": "技能仓库不嵌入主仓库，通过本清单按需下载。",
+  "skills": {
+    "openclaw-master-skills": {
+      "dir": "openclaw-master-skills-main",
+      "description": "OpenClaw 全量技能包（17K 文件）",
+      "size_mb": 150,
+      "source": "openclaw"
+    },
+    "awesome-claude-code": {
+      "dir": "awesome-claude-code-main",
+      "description": "Awesome Claude Code 技能合集",
+      "size_mb": 7,
+      "source": "openclaw"
+    },
+    "academic-research-skills": {
+      "dir": "academic-research-skills-main",
+      "description": "学术研究专用技能",
+      "size_mb": 13,
+      "source": "openclaw"
+    },
+    "claude-skills": {
+      "dir": "claude-skills-main",
+      "description": "通用 Claude 技能集合",
+      "size_mb": 5,
+      "source": "openclaw"
+    },
+    "claude-code-game-studios": {
+      "dir": "Claude-Code-Game-Studios-main",
+      "description": "游戏开发技能框架",
+      "size_mb": 1.5,
+      "source": "openclaw"
+    },
+    "xiaohongshu-ops": {
+      "dir": "xiaohongshu-ops-skill-main",
+      "description": "小红书运营技能",
+      "size_mb": 5,
+      "source": "openclaw"
+    }
+  }
+}

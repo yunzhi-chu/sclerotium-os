@@ -12,8 +12,8 @@ from typing import Any
 # INTELLIGENT BASH — understands what you mean
 # ═══════════════════════════════════════════════════════
 
-BLOCKED = [r'rm\s+-rf\s+/\s*\*?', r'>\s*/dev/sda', r'mkfs\.', r'dd\s+if=/dev/zero\s+of=/dev',
-           r'chmod\s+-R\s+777\s+/', r':\(\)\s*\{\s*:\|:&\s*\};:']
+from kernel.security import validate_command
+
 DANGEROUS = [r'rm\s+-rf\s+~', r'sudo\s+rm', r'git\s+push\s+--force',
              r'DROP\s+(TABLE|DATABASE)', r'shutdown', r'reboot']
 
@@ -71,11 +71,13 @@ def bash_execute(command: str, working_dir: str = ".", timeout: int = 120,
     B2修复: Unix-only 命令(head/wc)在 Windows 上自动转换为 PowerShell 替代。
     B6修复: ERRORLEVEL 正确捕获 — 使用 %ERRORLEVEL% 而非 $?。
     """
-    for p in BLOCKED:
-        if re.search(p, command, re.IGNORECASE):
-            return {"status":"blocked","error":f"BLOCKED: {p}","exit_code":-1,
-                    "requires_confirmation":True,"stdout":"","stderr":""}
-    is_dangerous = any(re.search(p, command, re.IGNORECASE) for p in DANGEROUS)
+    # ── 安全校验（共享 BLOCKED 列表） ──
+    check = validate_command(command)
+    if not check["pass"]:
+        return {"status":"blocked","error":check["reason"],"exit_code":-1,
+                "requires_confirmation":True,"stdout":"","stderr":""}
+    is_dangerous = check.get("is_dangerous", False) or \
+        any(re.search(p, command, re.IGNORECASE) for p in DANGEROUS)
 
     is_windows = (os.name == 'nt')
 
